@@ -1,2 +1,2 @@
 *.pyc
-./VRLatency.egg-info
+VRLatency.egg-info/
