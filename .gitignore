@@ -1,4 +1,9 @@
-*.pyc
 VRLatency.egg-info/
 build/
 dist/
+*.pyc
+*.pyd
+*~
+.idea
+.cache
+*.egg-info
