@@ -21,7 +21,7 @@ import click
 # specify the path to save the data in
 # @click.option('--save_data_in', default=None, help="The path within which the measurement data is saved")
 
-def disp(port, baud, save_data_in):
+def disp(port, baud):
     ''' Measuring the display latency. This code works with the Arduino code: display_latency.ino '''
 
     # create a window and project it on the display of your choice
@@ -46,6 +46,7 @@ def disp(port, baud, save_data_in):
     print("Emptying buffer")
     device.readline()
 
+    global trial, last_trial, POINTS, TOTAL_POINTS, data
     trial = 0
     last_trial = trial
     POINTS = 240
@@ -67,11 +68,11 @@ def disp(port, baud, save_data_in):
         dd = np.array(data).reshape(-1, 3)
         df = pd.DataFrame(data=dd, columns=['Time', "Chan1", 'Trial'])
         filename = 'testing'
-        df.to_csv('../Measurements/disp_latency/' + filename + '.csv', index=False)
+        df.to_csv('../Measurements/' + filename + '.csv', index=False)
 
 
     def start_next_trial(dt):
-        global trial
+        global trial, last_trial
         trial += 1
         plane.visible = True
         pyglet.clock.schedule_once(end_trial, .05)
