@@ -1,4 +1,5 @@
 VRLatency.egg-info/
+Measurements/
 build/
 dist/
 *.pyc
