@@ -8,19 +8,25 @@ import ratcave as rc
 from struct import unpack
 
 import click
+import functools
+
+
+def common_params(func):
+    # arduino specific inputs
+    @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
+    @click.option('--baud', default=250000, help="Serial communication baudrate")
+    # experiment specific inputs
+    @click.option('--trials', default=0, help="number of trials for measurement")
+    # specify the path to save the data in
+    # @click.option('--save_data_in', default=None, help="The path within which the measurement data is saved")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
 
 @click.command()
-
-# arduino specific inputs
-@click.option('--port', default='COM9', help="Port that Arduino board is connected to")
-@click.option('--baud', default=250000, help="Serial communication baudrate")
-
-# experiment specific inputs
-@click.option('--trials', default=0, help="number of trials for measurement")
-
-# specify the path to save the data in
-# @click.option('--save_data_in', default=None, help="The path within which the measurement data is saved")
-
+@common_params
 def disp(port, baud, trials):
     ''' Measuring the display latency. This code works with the Arduino code: display_latency.ino '''
 
@@ -96,6 +102,7 @@ def disp(port, baud, trials):
     pyglet.app.run()
     device.close()
 
-
-def total():
-    click.echo("hey thereeee!! I exist!")
+@click.command()
+@common_params
+def total(port, baud, trials):
+    click.echo("hey thereeee!! I exist!" + " " +  str(port) + " " + str(baud) + " " + str(trials))
