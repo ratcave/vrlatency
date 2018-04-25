@@ -16,12 +16,12 @@ import click
 @click.option('--baud', default=250000, help="Serial communication baudrate")
 
 # experiment specific inputs
-# @click.option('--trial', default=)
+@click.option('--trials', default=0, help="number of trials for measurement")
 
 # specify the path to save the data in
 # @click.option('--save_data_in', default=None, help="The path within which the measurement data is saved")
 
-def disp(port, baud):
+def disp(port, baud, trials):
     ''' Measuring the display latency. This code works with the Arduino code: display_latency.ino '''
 
     # create a window and project it on the display of your choice
@@ -72,7 +72,7 @@ def disp(port, baud):
 
 
     def start_next_trial(dt):
-        global trial, last_trial
+        global trial
         trial += 1
         plane.visible = True
         pyglet.clock.schedule_once(end_trial, .05)
@@ -80,11 +80,10 @@ def disp(port, baud):
 
 
     def end_trial(dt):
-        global data
         plane.visible = False
         dd = unpack('<' + 'I2H' * POINTS, device.read(8 * POINTS))
         data.extend(dd)
-        if len(data) > TOTAL_POINTS:
+        if trial > trials:
             save_data(data)
             pyglet.app.exit()
         pyglet.clock.schedule_once(start_next_trial, np.random.random() / 5 + .1)
@@ -96,3 +95,7 @@ def disp(port, baud):
 
     pyglet.app.run()
     device.close()
+
+
+def total():
+    click.echo("hey thereeee!! I exist!")
