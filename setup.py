@@ -17,8 +17,8 @@ setup(
     '''
         [console_scripts]
         cmd_echo_test = VRLatency.cmd_echo_test:cli
-        measure_total_latency = VRLatency.measure_latency:total
-        measure_display_latency = VRLatency.measure_latency:disp
-        measure_tracking_latency = VRLatency.measure_latency:track
+        measure_total_latency = VRLatency.cmd_api:total
+        measure_display_latency = VRLatency.cmd_api:disp
+        measure_tracking_latency = VRLatency.cmd_api:track
     ''',
 )

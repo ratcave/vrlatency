@@ -109,3 +109,12 @@ def total(port, baud, trials):
 	
 def tracking(port, baud, trials):
 	click.echo("tracking latency measurement code!" + " " +  str(port) + " " + str(baud) + " " + str(trials))
+
+
+def main():
+
+    connect_to_arduino()
+    # create experiment object which takes the type
+    create_stimulus()
+    create_app()
+    run()
