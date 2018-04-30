@@ -105,4 +105,7 @@ def disp(port, baud, trials):
 @click.command()
 @common_params
 def total(port, baud, trials):
-    click.echo("hey thereeee!! I exist!" + " " +  str(port) + " " + str(baud) + " " + str(trials))
+    click.echo("total latency measurement code!" + " " +  str(port) + " " + str(baud) + " " + str(trials))
+	
+def tracking(port, baud, trials):
+	click.echo("tracking latency measurement code!" + " " +  str(port) + " " + str(baud) + " " + str(trials))
