@@ -3,7 +3,10 @@ import serial
 import numpy as np
 import pandas as pd
 import ratcave as rc
+import VRLatency as vrl
 from struct import unpack
+
+# from Stimulus import *
 
 def connect_to_device(port=None, baudrate=None):
     """Connect to Arduino board
@@ -33,9 +36,9 @@ class Experiment(object):
                 - trials: number of trials
                 - filename: name for the recorded data
                 - path: path for saving the recorded data (if not given it will be saved in current directory)
-
-
         """
+
+        self.data = []
         self.trials = trials
         self.device = device
 
@@ -69,18 +72,47 @@ class Experiment(object):
         return:
 
         """
+        if mode=='display':
+            self.__display(on_width=on_width, off_width=off_width)
+        elif mode=='tracking':
+            self.__tracking()
+        elif mode == 'total':
+            self.__total()
+        else:
+            raise ValueError("There is no such mode. Available mode are:\n"
+                             "- display\n- tracking\n- total")
+
+    def save(self, filename=None, path=None):
+        """
+        to save the recorded data while runing the experiment
+
+        Inputs:
+                -
+
+        Returns:
+                -
+        """
+
+        # Checking the necessary inputs
+        if filename is None:
+            raise ValueError("Specify a name for the recorded data")
+
+        if path is None:
+            # set the path to the current path
+            pass
+
+    def __display(self, on_width, off_width):
 
         if type(on_width) == float:
             on_width = [on_width] * 2
-        elif len(on_width)>2:
+        elif len(on_width) > 2:
             raise ValueError("on_width must have either on or two values!")
 
         if type(off_width) == float:
             off_width = [off_width] * 2
-        elif len(off_width)>2:
+        elif len(off_width) > 2:
             raise ValueError("off_width must have either on or two values!")
 
-        self.data = []
         self.__trial = 0
         self.__last_trial = self.__trial
 
@@ -118,22 +150,10 @@ class Experiment(object):
 
         pyglet.app.run()
 
+    def __tracking(self):
+        pass
 
-    def save(self, filename=None, path=None):
-        """
-        to save the recorded data while runing the experiment
-
-        Inputs:
-                -
-
-        Returns:
-                -
-        """
-
-        # Checking the necessary inputs
-        if filename is None:
-            raise ValueError("Specify a name for the recorded data")
-
-        if path is None:
-            # set the path to the current path
-            pass
+    def __total(self):
+        vrl.Stim_without_tracking(window=self._mywin, mesh=self.stim)
+        # while len(self.data) < TOTAL_POINTS * 11:
+        #     self.data.extend(unpack('<' + 'I3H?' * POINTS, device.read(11 * POINTS)))
