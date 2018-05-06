@@ -15,8 +15,6 @@ def main(mode, trials, port, baud):
     # create an experiment objecta and attach the device to it
     exp = vrl.Experiment(trials=trials, device=arduino)
 
-    exp.create_window(screen_ind=0)
-
     exp.create_stim(type='Plane')
     exp.stim.point_size = 20.
     exp.stim.position.xyz = 0, 0, -3
