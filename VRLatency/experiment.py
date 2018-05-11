@@ -9,17 +9,35 @@ from struct import unpack
 # from Stimulus import *
 
 class Device(object):
+    """ Handles attributes and methods related to stimulation/recording device
 
+    Attributes:
+        channel:
+        is_connected (bool):
+
+    """
     def __init__(self):
         self.channel = None
         self.is_connected = False
 
-    def connect(self, port=None, baudrate=None):
-        """ Connects to recording device
+    def find_device(self):
+        """ Display a list of connected devices to the machine
 
-        :param port:
-        :param baudrate:
-        :return:
+        Returns:
+            list of the ports and the connected devices to this machine
+
+        """
+        raise NotImplementedError()
+
+    def connect(self, port=None, baudrate=None):
+        """ Connect to recording device
+
+        Args:
+            port: the port that the stimulation/recording device is connected to
+            baudrate: the baudrate set on the recording device
+
+        Return:
+
         """
 
         if (port is None) or (baudrate is None):
@@ -34,14 +52,28 @@ class Device(object):
     def disconnect(self):
         """ disconnect the device
 
-        :return:
         """
         self.channel.close()
+        self.is_connected = False
 
 
 class Window(pyglet.window.Window):
+    """ Window object for the experiment
+
+    Attributes:
+
+    """
 
     def __init__(self, screen_ind=0, resizable=False, fullscreen=False, *args, **kwargs):
+        """ initialize window object
+
+        Args:
+            screen_ind: inidicate which screen must contain the created window (if you have more than one screen)
+            resizable: in case a resizable window is required, set this to True (default is False)
+            fullscreen: for a fullscreen window, set this to True (default is False)
+            args and kwargs: all other inputs that pyglet window objects can accept (look into pyglet documentaion)
+
+        """
         platform = pyglet.window.get_platform()
         display = platform.get_default_display()
         screen = display.get_screens()[screen_ind]
@@ -49,12 +81,23 @@ class Window(pyglet.window.Window):
 
 
 class Stim():
+    """ initialize an stimulation object
 
+    Attributes:
+        mesh: the object appearing on the screen
+
+    """
     def __init__(self, type='Plane'):
         self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS)
 
 
 class Data(object):
+    """ Data object handling data-related matters
+
+    Attributes:
+        _array: stores the recorded data during the experiment (if record is set to True, and there exist a recording device)
+
+    """
 
     def __init__(self):
 
@@ -74,14 +117,18 @@ class Data(object):
         # df = pd.DataFrame(data=dd, columns=['Time', "Chan1", 'Trial'])
         # df.to_csv('../Measurements/' + filename + '.csv', index=False)
 
+    def analyze(self):
+        raise NotImplementedError()
 
 
 class Experiment(object):
+    """ Experiment object integrates other components and let's use to run, record and store experiment data
 
+    """
     def __init__(self, window=None, stim=None, trials=20):
         """ Initialize an experiment object
 
-        Inputs:
+        Args:
                 - trials: number of trials
                 - filename: name for the recorded data
                 - path: path for saving the recorded data (if not given it will be saved in current directory)
