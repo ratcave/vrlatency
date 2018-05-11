@@ -145,6 +145,7 @@ class BaseExperiment(object):
         self.__last_trial = self._trial
 
         self._init_window_events()
+
     @property
     def trial(self):
         return self._trial
