@@ -25,7 +25,7 @@ class Device(object):
         self.channel.readline()
 
     @staticmethod
-    def find_device():
+    def find_all():
         """ Display a list of connected devices to the machine
 
         Returns:
@@ -181,11 +181,15 @@ class BaseExperiment(object):
 
 
 class DisplayExperiment(BaseExperiment):
+    """ Experiment object to measure display latency measurement
 
-    def __init__(self, window, device, trials=20, stim=None, on_width=.5, off_width=.5):
+    """
+
+    def __init__(self, on_width=.5, off_width=.5, *args, **kwargs):
+
+        super(self.__class__).__init__(*args, **kwargs)
 
         # TODO: use generator for on_width and off_width
-        super(self.__class__).__init__(window=window, device=device, trials=trials, stim=stim)
         self.on_width = [float(x) for x in on_width] if hasattr(on_width, '__iter__') and len(on_width) == 2 else [float(on_width)] * 2
         self.off_width = off_width
 
@@ -216,19 +220,24 @@ class DisplayExperiment(BaseExperiment):
 
 
 
-class tracking_latency(BaseExperiment):
+class TrackingExperiment(BaseExperiment):
+    """ Experiment object for tracking latency measurement
 
+    """
     def _init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(self.__class__).__init__(*args, **kwargs)
 
     def paradigm(self):
         raise NotImplementedError()
 
 
-class total_latency(BaseExperiment):
+class TotalExperiment(BaseExperiment):
+    """ Experiment object for total latency measurement
+
+    """
 
     def _init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(self.__class__).__init__(*args, **kwargs)
 
     def paradigm(self):
         vrl.Stim_without_tracking(window=self.window, mesh=self.stim.mesh)
