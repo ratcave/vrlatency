@@ -13,7 +13,7 @@ def main(mode, trials, port, baud):
     arduino = vrl.connect_to_device(port=port, baudrate=baud)
 
     # create an experiment objecta and attach the device to it
-    exp = vrl.Experiment(trials=trials, device=arduino)
+    exp = vrl.BaseExperiment(trials=trials, device=arduino)
 
     exp.create_stim(type='Plane')
     exp.stim.point_size = 20.

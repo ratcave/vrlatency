@@ -1,2 +1,2 @@
-from .experiment import *
+from .baseexperiment import *
 from .stimulus import *

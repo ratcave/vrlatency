@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import pyglet
 import serial
 import numpy as np
@@ -16,11 +17,15 @@ class Device(object):
         is_connected (bool):
 
     """
-    def __init__(self):
-        self.channel = None
-        self.is_connected = False
 
-    def find_device(self):
+    def __init__(self, port='COM9', baudrate=250000):
+        self.port = port
+        self.baudrate = baudrate
+        self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
+        self.channel.readline()
+
+    @staticmethod
+    def find_device():
         """ Display a list of connected devices to the machine
 
         Returns:
@@ -29,32 +34,13 @@ class Device(object):
         """
         raise NotImplementedError()
 
-    def connect(self, port=None, baudrate=None):
-        """ Connect to recording device
-
-        Args:
-            port: the port that the stimulation/recording device is connected to
-            baudrate: the baudrate set on the recording device
-
-        Return:
-
-        """
-
-        if (port is None) or (baudrate is None):
-            raise ValueError("Specify both port and baudrate for the communication channel.")
-
-        print('Connecting...')
-        self.channel = serial.Serial(port, baudrate=baudrate, timeout=2.)
-        self.channel.readline()
-        print('Connection successful!')
-        self.is_connected = True
-
     def disconnect(self):
-        """ disconnect the device
-
-        """
+        """Disconnect the device."""
         self.channel.close()
-        self.is_connected = False
+
+    @property
+    def is_connected(self):
+        return self.channel.isOpen()
 
 
 class Window(pyglet.window.Window):
@@ -87,8 +73,20 @@ class Stim():
         mesh: the object appearing on the screen
 
     """
-    def __init__(self, type='Plane'):
-        self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS)
+    def __init__(self, type='Plane', position=(0, 0)):
+        self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS, position=(0, 0, -3))
+        self.position = position
+
+    @property
+    def position(self):
+        return self.mesh.position.xy
+
+    @position.setter
+    def position(self, value):
+        self.mesh.position.xy = value
+
+    def draw(self):
+        self.mesh.draw()
 
 
 class Data(object):
@@ -121,11 +119,11 @@ class Data(object):
         raise NotImplementedError()
 
 
-class Experiment(object):
+class BaseExperiment(object):
     """ Experiment object integrates other components and let's use to run, record and store experiment data
 
     """
-    def __init__(self, window=None, stim=None, trials=20):
+    def __init__(self, window, device, trials=20, stim=None):
         """ Initialize an experiment object
 
         Args:
@@ -135,25 +133,30 @@ class Experiment(object):
         """
 
         # create window
-        self._mywin = window
-
-        self._stim = stim
+        self.device = device
+        self.window = window
+        self.stim = stim
 
         # create Data object
         self.data = Data()
 
-
         self.trials = trials
         self._trial = 0
-        self.__last_trial = 0
+        self.__last_trial = self._trial
 
-
+        self._init_window_events()
     @property
     def trial(self):
         return self._trial
 
+    def _init_window_events(self):
+        @self.window.event
+        def on_draw():
+            self.window.clear()
+            with rc.default_shader:
+                self.stim.draw()
 
-    def run(self, record=False, device=None):
+    def run(self, record=False):
         """ runs the experiment in the passed application window
 
         Input:
@@ -163,51 +166,38 @@ class Experiment(object):
         """
 
         if record and (self.device is None):
-            self._mywin.close()
+            self.window.close()
             raise ValueError("No recording device attached.")
 
-        self._paradigm()
+        self.paradigm()
 
-    def _paradigm(self):
+        pyglet.clock.schedule(lambda dt: dt)
+        pyglet.app.run()
+
+    @abstractmethod
+    def paradigm(self):
         pass
 
 
-class display_latency(Experiment):
+class DisplayExperiment(BaseExperiment):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, window, device, trials=20, stim=None, on_width=.5, off_width=.5):
 
-    def run(self, on_width=.5, off_width=.5, record=False, device=None):
-        self._paradigm(self, on_width=on_width, off_width=off_width)
+        # TODO: use generator for on_width and off_width
+        super(self.__class__).__init__(window=window, device=device, trials=trials, stim=stim)
+        self.on_width = [float(x) for x in on_width] if hasattr(on_width, '__iter__') and len(on_width) == 2 else [float(on_width)] * 2
+        self.off_width = off_width
 
+    def paradigm(self):
 
-    def _paradigm(self, on_width=None, off_width=None):
+        # TODO: simplify this bit
+        if self.__last_trial != self._trial:
+            self.__last_trial = self._trial
+            self.device.channel.write(b'S')
 
-        if type(on_width) == float:
-            on_width = [on_width] * 2
-        elif len(on_width) > 2:
-            raise ValueError("on_width must have either on or two values!")
-
-        if type(off_width) == float:
-            off_width = [off_width] * 2
-        elif len(off_width) > 2:
-            raise ValueError("off_width must have either on or two values!")
-
-        self.__last_trial = self.__trial
-
-        @self._mywin.event
-        def on_draw():
-            self._mywin.clear()
-            with rc.default_shader:
-                self.stim.draw()
-                if self.__last_trial != self.__trial:
-                    self.__last_trial = self.__trial
-                    self.device.write(b'S')
-            if self.has_fps_display:
-                self._fr.draw()
 
         def start_next_trial(dt):
-            self.__trial += 1
+            self._trial += 1
             self.stim.visible = True
             pyglet.clock.schedule_once(end_trial, np.random.uniform(low=on_width[0], high=on_width[1]))
         pyglet.clock.schedule_once(start_next_trial, 0)
@@ -216,36 +206,30 @@ class display_latency(Experiment):
         def end_trial(dt):
             POINTS = 240
             self.stim.visible = False
-            dd = unpack('<' + 'I2H' * POINTS, self.device.read(8 * POINTS))
-            self.data.extend(dd)
-            if self.__trial > self.trials:
+            dd = unpack('<' + 'I2H' * POINTS, self.device.channel.read(8 * POINTS))
+            self.data.array.extend(dd)
+            if self._trial > self.trials:
                 pyglet.app.exit()  # exit the pyglet app
-                self.device.close()  # close the serial communication channel
+                self.device.channel.close()  # close the serial communication channel
             pyglet.clock.schedule_once(start_next_trial, np.random.uniform(low=off_width[0], high=off_width[1]))
 
 
-        def update(dt):
-            pass
-        pyglet.clock.schedule(update)
 
-        pyglet.app.run()
-
-
-class tracking_latency(Experiment):
+class tracking_latency(BaseExperiment):
 
     def _init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _paradigm(self):
+    def paradigm(self):
         raise NotImplementedError()
 
 
-class total_latency(Experiment):
+class total_latency(BaseExperiment):
 
     def _init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _paradigm(self):
-        vrl.Stim_without_tracking(window=self._mywin, mesh=self._stim.mesh)
+    def paradigm(self):
+        vrl.Stim_without_tracking(window=self.window, mesh=self.stim.mesh)
         # while len(self.data) < TOTAL_POINTS * 11:
         #     self.data.extend(unpack('<' + 'I3H?' * POINTS, device.read(11 * POINTS)))

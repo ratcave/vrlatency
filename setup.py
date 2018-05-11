@@ -12,7 +12,6 @@ setup(
 
     # required packages
     install_requires=['matplotlib', 'click', 'pyglet', 'ratcave', 'pyserial'],
-    #['matplotlib', 'click', 'pyglet', 'ratcave'],
 
     entry_points=
     '''
