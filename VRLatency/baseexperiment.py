@@ -168,9 +168,20 @@ class BaseExperiment(pyglet.window.Window):
         if self.arduino:
             self.arduino.disconnect()  # close the serial communication channel
 
-    @abstractmethod
     def run(self):
         """ runs the experiment in the passed application window"""
+        for trial in range(1, self.trials + 1):
+            self.dispatch_events()
+            if self.arduino:
+                self.arduino.init_next_trial()
+            self.run_trial()
+            if self.arduino:
+                dd = self.arduino.read()
+                self.data.values.extend(dd)
+        self.end()
+
+    @abstractmethod
+    def run_trial(self):
         pass
 
     def on_key_press(self, symbol, modifiers):
@@ -195,23 +206,14 @@ class DisplayExperiment(BaseExperiment):
     def __init__(self, stim, *args, **kwargs):
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
 
-    def run(self):
-        """ runs the experiment in the passed application window"""
-        for trial in range(1, self.trials + 1):
-            self.dispatch_events()
-            if self.arduino:
-                self.arduino.init_next_trial()
-            self.clear()
-            self.stim.draw()
-            self.flip()
-            sleep(next(self.on_width))
-            self.clear()
-            self.flip()
-            sleep(next(self.off_width))
-            if self.arduino:
-                dd = self.arduino.read()
-                self.data.values.extend(dd)
-        self.end()
+    def run_trial(self):
+        self.clear()
+        self.stim.draw()
+        self.flip()
+        sleep(next(self.on_width))
+        self.clear()
+        self.flip()
+        sleep(next(self.off_width))
 
 
 class TrackingExperiment(BaseExperiment):
