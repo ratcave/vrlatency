@@ -8,6 +8,7 @@ import ratcave as rc
 import VRLatency as vrl
 from struct import unpack
 from itertools import cycle
+from warnings import warn
 
 
 # from Stimulus import *
@@ -128,7 +129,7 @@ class BaseExperiment(pyglet.window.Window):
     """ Experiment object integrates other components and let's use to run, record and store experiment data
 
     """
-    def __init__(self, device, screen_ind=0, trials=20, stim=None, n_points=None, packet_fmt=None, on_width=.5, off_width=.5, *args, **kwargs):
+    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None, on_width=.5, off_width=.5, *args, **kwargs):
         """ Initialize an experiment object
 
         Args:
@@ -144,10 +145,13 @@ class BaseExperiment(pyglet.window.Window):
         super().__init__(screen=screen, *args, **kwargs)
 
         # create window
-        self.device = device
+
+        self.arduino = arduino
+        if not arduino:
+            warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
+
+
         self.stim = stim
-        self.n_points = n_points
-        self.packet_fmt = packet_fmt
 
         # create Data object
         self.data = Data()
@@ -178,28 +182,17 @@ class BaseExperiment(pyglet.window.Window):
     def end_trial(self, dt):
         if self.stim:
             self.stim.visible = False
-        if self.device:
-            dd = self.device.read()
+        if self.arduino:
+            dd = self.arduino.read()
             self.data.values.extend(dd)
         if self._trial > self.trials:
             pyglet.app.exit()  # exit the pyglet app
-            if self.device:
-                self.device.disconnect()  # close the serial communication channel
+            if self.arduino:
+                self.arduino.disconnect()  # close the serial communication channel
         pyglet.clock.schedule_once(self.start_next_trial, next(self.off_width))
 
-    def run(self, record=False):
-        """ runs the experiment in the passed application window
-
-        Input:
-
-        return:
-
-        """
-
-        if record and (self.device is None):
-            self.close()
-            raise ValueError("No recording device attached.")
-
+    def run(self):
+        """ runs the experiment in the passed application window"""
 
         # run the pyglet application
         pyglet.clock.schedule(lambda dt: dt)
@@ -230,11 +223,6 @@ class DisplayExperiment(BaseExperiment):
     """ Experiment object to measure display latency measurement
 
     """
-
-    def __init__(self, device, n_points=240, packet_fmt='I2H', *args, **kwargs):
-        super(self.__class__, self).__init__(device, n_points=n_points, packet_fmt=packet_fmt, *args, **kwargs)
-
-
     def paradigm(self):
         print('Starting Trial', self._trial)
 
