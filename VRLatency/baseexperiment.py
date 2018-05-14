@@ -173,6 +173,9 @@ class BaseExperiment(pyglet.window.Window):
         """ runs the experiment in the passed application window"""
         pass
 
+    def on_key_press(self, symbol, modifiers):
+        if key.ESCAPE == symbol:
+            self.end()
 
 def _gen_iter(vals):
     if not hasattr(vals, '__iter__'):
@@ -195,6 +198,7 @@ class DisplayExperiment(BaseExperiment):
     def run(self):
         """ runs the experiment in the passed application window"""
         for trial in range(1, self.trials + 1):
+            self.dispatch_events()
             if self.arduino:
                 self.arduino.init_next_trial()
             self.clear()
@@ -209,6 +213,7 @@ class DisplayExperiment(BaseExperiment):
                 self.data.values.extend(dd)
         self.end()
 
+
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
 
@@ -218,7 +223,6 @@ class TrackingExperiment(BaseExperiment):
 
         for trial in range(1, self.trials+1):
             pass
-
 
 
 class TotalExperiment(BaseExperiment):
