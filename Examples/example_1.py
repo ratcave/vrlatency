@@ -8,7 +8,7 @@ arduino.connect(port='COM9', baudrate=250000)
 mywin = vrl.Window(screen_ind=1, fullscreen=True)
 
 # create a stimulus
-mystim = vrl.Stim()
+mystim = vrl.Stimulus()
 mystim.mesh.position.xyz = 0, 0, -3
 
 # create an experiment app

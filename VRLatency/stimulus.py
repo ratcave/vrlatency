@@ -6,6 +6,40 @@ from itertools import cycle
 # import natnetclient as natnet
 
 
+class Stimulus(object):
+    """ initialize an stimulation object
+
+    Attributes:
+        mesh: the object appearing on the screen
+
+    """
+    def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0)):
+        self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS, position=(0, 0, -3))
+        self.position = position
+        self.color = tuple(color)
+
+    @property
+    def position(self):
+        return self.mesh.position.xy
+
+    @position.setter
+    def position(self, value):
+        self.mesh.position.xy = value
+
+    @property
+    def color(self):
+        return self.mesh.uniforms['diffuse']
+
+    @color.setter
+    def color(self, values):
+        r, g, b = values
+        self.mesh.uniforms['diffuse'] = r, g, b
+
+    def draw(self):
+        with rc.default_shader:
+            self.mesh.draw()
+
+
 def Stim_without_tracking(window=None, mesh=None):
 
     mywin = window
@@ -48,3 +82,5 @@ def Stim_with_tracking(window=None, mesh=None):
     pyglet.clock.schedule(update)
 
     pyglet.app.run()
+
+

@@ -4,7 +4,7 @@ import VRLatency as vrl
 arduino = vrl.Arduino(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulation pattern
-mystim = vrl.Stim(position=(0, 0))
+mystim = vrl.Stimulus(position=(0, 0))
 
 # create an experiment app
 myexp = vrl.DisplayExperiment(#arduino=arduino,

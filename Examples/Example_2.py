@@ -7,7 +7,7 @@ arduino = vrl.Arduino(port='COM9', baudrate=250000)
 mywin = vrl.Window(screen_ind=1, fullscreen=True)
 
 # create a stimulus
-mystim = vrl.Stim(position=(0, 0))
+mystim = vrl.Stimulus(position=(0, 0))
 
 # create an experiment app
 myexp = vrl.DisplayExperiment(window=mywin, stim=mystim, device=arduino)
