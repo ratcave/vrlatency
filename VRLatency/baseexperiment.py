@@ -20,11 +20,20 @@ class Arduino(object):
         is_connected (bool):
 
     """
+    pkt_formats = {'Tracking': 'I2H', 'Display': 'I2H', 'Total': 'I2H'}
+    pkt_size = {'Tracking': 8, 'Display': 8, 'Total': 8}
+    n_point_options = {'Tracking': 240, 'Display': 240, 'Total': 240}
 
-    def __init__(self, port, baudrate):
+
+    def __init__(self, experiment_type, port, baudrate):
+        """Can be 'Tracking', 'Display', or 'Total'"""
         self.port = port
         self.baudrate = baudrate
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
+        self.experiment_type = experiment_type
+        self.packet_fmt = self.pkt_formats[experiment_type]
+        self.packet_size = self.pkt_size[experiment_type]
+        self.n_points = self.n_point_options[experiment_type]
         self.channel.readline()
 
     @staticmethod
@@ -45,15 +54,11 @@ class Arduino(object):
     def is_connected(self):
         return self.channel.isOpen()
 
-    def read(self, n_points=240, packet_fmt='I2H'):
-        return unpack('<' + packet_fmt * n_points, self.channel.read(8 * n_points))
+    def read(self, n_points=240):
+        return unpack('<' + self.packet_fmt * self.n_points, self.channel.read(self.packet_size * self.n_points))
 
     def init_next_trial(self):
         self.channel.write(bytes('S', 'utf-8'))
-
-    def init_experiment(self, exp_type):
-        """Can be 'Tracking', 'Display', or 'Total'"""
-        raise NotImplementedError
 
     def ping(self):
         """Returns True if Arduino is connected and has correct code loaded."""
@@ -62,31 +67,6 @@ class Arduino(object):
         packet = self.channel.read(30)
         response = unpack('<3c', packet)
         return True if response == 'yes' else False
-
-
-
-
-class Window(pyglet.window.Window):
-    """ Window object for the experiment
-
-    Attributes:
-
-    """
-
-    def __init__(self, screen_ind=0, resizable=False, fullscreen=False, *args, **kwargs):
-        """ initialize window object
-
-        Args:
-            screen_ind: inidicate which screen must contain the created window (if you have more than one screen)
-            resizable: in case a resizable window is required, set this to True (default is False)
-            fullscreen: for a fullscreen window, set this to True (default is False)
-            args and kwargs: all other inputs that pyglet window objects can accept (look into pyglet documentaion)
-
-        """
-        platform = pyglet.window.get_platform()
-        display = platform.get_default_display()
-        screen = display.get_screens()[screen_ind]
-        super().__init__(screen=screen, resizable=resizable, fullscreen=fullscreen, *args, **kwargs)
 
 
 class Stim(object):
@@ -144,11 +124,11 @@ class Data(object):
         raise NotImplementedError()
 
 
-class BaseExperiment(object):
+class BaseExperiment(pyglet.window.Window):
     """ Experiment object integrates other components and let's use to run, record and store experiment data
 
     """
-    def __init__(self, window, device, trials=20, stim=None, n_points=None, packet_fmt=None, on_width=.5, off_width=.5):
+    def __init__(self, device, screen_ind=0, trials=20, stim=None, n_points=None, packet_fmt=None, on_width=.5, off_width=.5, *args, **kwargs):
         """ Initialize an experiment object
 
         Args:
@@ -157,9 +137,14 @@ class BaseExperiment(object):
                 - path: path for saving the recorded data (if not given it will be saved in current directory)
         """
 
+
+        platform = pyglet.window.get_platform()
+        display = platform.get_default_display()
+        screen = display.get_screens()[screen_ind]
+        super().__init__(screen=screen, *args, **kwargs)
+
         # create window
         self.device = device
-        self.window = window
         self.stim = stim
         self.n_points = n_points
         self.packet_fmt = packet_fmt
@@ -173,19 +158,15 @@ class BaseExperiment(object):
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
-        self._init_window_events()
-
     @property
     def trial(self):
         return self._trial
 
-    def _init_window_events(self):
-        @self.window.event
-        def on_draw():
-            self.window.clear()
-            with rc.default_shader:
-                self.stim.draw()
-                self.send_msg_on_draw()
+    def on_draw(self):
+        self.clear()
+        with rc.default_shader:
+            self.stim.draw()
+            self.send_msg_on_draw()
 
     def start_next_trial(self, dt):
         self._trial += 1
@@ -198,7 +179,7 @@ class BaseExperiment(object):
         if self.stim:
             self.stim.visible = False
         if self.device:
-            dd = self.device.read(n_points=self.n_points, packet_fmt=self.packet_fmt)
+            dd = self.device.read()
             self.data.values.extend(dd)
         if self._trial > self.trials:
             pyglet.app.exit()  # exit the pyglet app
@@ -216,7 +197,7 @@ class BaseExperiment(object):
         """
 
         if record and (self.device is None):
-            self.window.close()
+            self.close()
             raise ValueError("No recording device attached.")
 
 
@@ -250,8 +231,8 @@ class DisplayExperiment(BaseExperiment):
 
     """
 
-    def __init__(self, window, device, n_points=240, packet_fmt='I2H', *args, **kwargs):
-        super(self.__class__, self).__init__(window, device, n_points=n_points, packet_fmt=packet_fmt, *args, **kwargs)
+    def __init__(self, device, n_points=240, packet_fmt='I2H', *args, **kwargs):
+        super(self.__class__, self).__init__(device, n_points=n_points, packet_fmt=packet_fmt, *args, **kwargs)
 
 
     def paradigm(self):
@@ -277,6 +258,6 @@ class TotalExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, **kwargs)
 
     def paradigm(self):
-        vrl.Stim_without_tracking(window=self.window, mesh=self.stim.mesh)
+        vrl.Stim_without_tracking(window=self, mesh=self.stim.mesh)
         # while len(self.data) < TOTAL_POINTS * 11:
         #     self.data.extend(unpack('<' + 'I3H?' * POINTS, device.read(11 * POINTS)))
