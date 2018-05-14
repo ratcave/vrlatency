@@ -1,6 +1,7 @@
 from abc import abstractmethod
 import pyglet
 import serial
+import random
 import numpy as np
 # import pandas as pd
 import ratcave as rc
@@ -172,6 +173,7 @@ class BaseExperiment(object):
 
         self.paradigm()
 
+        # run the pyglet application
         pyglet.clock.schedule(lambda dt: dt)
         pyglet.app.run()
 
@@ -200,7 +202,7 @@ class DisplayExperiment(BaseExperiment):
         def start_next_trial(dt):
             self._trial += 1
             self.stim.visible = True
-            pyglet.clock.schedule_once(end_trial, np.random.uniform(low=on_width[0], high=on_width[1]))
+            pyglet.clock.schedule_once(end_trial, random.uniform(low=on_width[0], high=on_width[1]))
         pyglet.clock.schedule_once(start_next_trial, 0)
 
 
@@ -212,7 +214,7 @@ class DisplayExperiment(BaseExperiment):
             if self._trial > self.trials:
                 pyglet.app.exit()  # exit the pyglet app
                 self.device.channel.close()  # close the serial communication channel
-            pyglet.clock.schedule_once(start_next_trial, np.random.uniform(low=off_width[0], high=off_width[1]))
+            pyglet.clock.schedule_once(start_next_trial, random.uniform(low=off_width[0], high=off_width[1]))
 
 
 
