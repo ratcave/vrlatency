@@ -11,6 +11,7 @@ from struct import unpack
 from itertools import cycle
 from warnings import warn
 from time import sleep
+# import natnetclient as natnet
 
 # from Stimulus import *
 
@@ -167,26 +168,9 @@ class BaseExperiment(pyglet.window.Window):
         if self.arduino:
             self.arduino.disconnect()  # close the serial communication channel
 
+    @abstractmethod
     def run(self):
         """ runs the experiment in the passed application window"""
-        for trial in range(1, self.trials + 1):
-            if self.arduino:
-                self.arduino.init_next_trial()
-            if self.stim:
-                self.clear()
-                self.stim.draw()
-                self.flip()
-            sleep(next(self.on_width))
-            if self.stim:
-                self.clear()
-                self.flip()
-            sleep(next(self.off_width))
-            if self.arduino:
-                dd = self.arduino.read()
-                self.data.values.extend(dd)
-        self.end()
-
-    def send_msg_on_draw(self):
         pass
 
 
@@ -201,35 +185,45 @@ def _gen_iter(vals):
         raise TypeError("'vals' must contain one or two values")
 
 
-
-
 class DisplayExperiment(BaseExperiment):
     """ Experiment object to measure display latency measurement
 
     """
-    def paradigm(self):
-        print('Starting Trial', self.trial)
+    def __init__(self, stim, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
+
+    def run(self):
+        """ runs the experiment in the passed application window"""
+        for trial in range(1, self.trials + 1):
+            if self.arduino:
+                self.arduino.init_next_trial()
+            self.clear()
+            self.stim.draw()
+            self.flip()
+            sleep(next(self.on_width))
+            self.clear()
+            self.flip()
+            sleep(next(self.off_width))
+            if self.arduino:
+                dd = self.arduino.read()
+                self.data.values.extend(dd)
+        self.end()
 
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
 
     """
-    def _init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+    def run(self):
+        """ runs the experiment in the passed application window"""
 
-    def paradigm(self):
-        raise NotImplementedError()
+        for trial in range(1, self.trials+1):
+            pass
+
 
 
 class TotalExperiment(BaseExperiment):
     """ Experiment object for total latency measurement
 
     """
-
-    def _init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
-
-    def paradigm(self):
-        vrl.Stim_without_tracking(window=self, mesh=self.stim.mesh)
-        # while len(self.data) < TOTAL_POINTS * 11:
-        #     self.data.extend(unpack('<' + 'I3H?' * POINTS, device.read(11 * POINTS)))
+    def run(self):
+        raise NotImplementedError
