@@ -1,5 +1,6 @@
 from abc import abstractmethod
 import pyglet
+from pyglet.window import key
 import serial
 import random
 import numpy as np
@@ -9,7 +10,7 @@ import VRLatency as vrl
 from struct import unpack
 from itertools import cycle
 from warnings import warn
-
+from time import sleep
 
 # from Stimulus import *
 
@@ -158,51 +159,32 @@ class BaseExperiment(pyglet.window.Window):
         self.data = Data()
 
         self.trials = trials
-        self._trial = 0
-        self.__last_trial = self._trial
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
-    def on_draw(self):
-        self.clear()
-        self.stim.draw()
-        self.send_msg_on_draw()
-
-    @property
-    def trial(self):
-        return self._trial
-
-    def start_next_trial(self, dt):
-        self._trial += 1
-        if self.stim:
-            self.stim.visible = True
+    def end(self):
+        self.close()  # exit the pyglet app
         if self.arduino:
-            self.arduino.init_next_trial()
-        self.paradigm()
-        pyglet.clock.schedule_once(self.end_trial, next(self.on_width))
-
-    def end_trial(self, dt):
-        if self.stim:
-            self.stim.visible = False
-        if self.arduino:
-            dd = self.arduino.read()
-            self.data.values.extend(dd)
-        if self._trial > self.trials:
-            pyglet.app.exit()  # exit the pyglet app
-            if self.arduino:
-                self.arduino.disconnect()  # close the serial communication channel
-        pyglet.clock.schedule_once(self.start_next_trial, next(self.off_width))
+            self.arduino.disconnect()  # close the serial communication channel
 
     def run(self):
         """ runs the experiment in the passed application window"""
-
-        # run the pyglet application
-        pyglet.clock.schedule(lambda dt: dt)
-        pyglet.clock.schedule_once(self.start_next_trial, 0)
-        pyglet.app.run()
-
-    def paradigm(self):
-        pass
+        for trial in range(1, self.trials + 1):
+            if self.arduino:
+                self.arduino.init_next_trial()
+            if self.stim:
+                self.clear()
+                self.stim.draw()
+                self.flip()
+            sleep(next(self.on_width))
+            if self.stim:
+                self.clear()
+                self.flip()
+            sleep(next(self.off_width))
+            if self.arduino:
+                dd = self.arduino.read()
+                self.data.values.extend(dd)
+        self.end()
 
     def send_msg_on_draw(self):
         pass
@@ -226,7 +208,7 @@ class DisplayExperiment(BaseExperiment):
 
     """
     def paradigm(self):
-        print('Starting Trial', self._trial)
+        print('Starting Trial', self.trial)
 
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
