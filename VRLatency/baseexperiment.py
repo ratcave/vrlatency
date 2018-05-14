@@ -19,7 +19,7 @@ class Device(object):
 
     """
 
-    def __init__(self, port='COM9', baudrate=250000):
+    def __init__(self, port, baudrate):
         self.port = port
         self.baudrate = baudrate
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
@@ -157,6 +157,7 @@ class BaseExperiment(object):
             self.window.clear()
             with rc.default_shader:
                 self.stim.draw()
+                self.send_msg_on_draw()
 
     def run(self, record=False):
         """ runs the experiment in the passed application window
@@ -181,34 +182,35 @@ class BaseExperiment(object):
     def paradigm(self):
         pass
 
+    def send_msg_on_draw(self):
+        pass
+
 
 class DisplayExperiment(BaseExperiment):
     """ Experiment object to measure display latency measurement
 
     """
 
-    def __init__(self, on_width=.5, off_width=.5, *args, **kwargs):
+    def __init__(self, window, device, on_width=.5, off_width=.5, *args, **kwargs):
+        super(self.__class__, self).__init__(window, device, *args, **kwargs)
+        self.__last_trial = self._trial
 
-        super(self.__class__).__init__(*args, **kwargs)
-
-        # TODO: use generator for on_width and off_width
-        self.on_width = [float(x) for x in on_width] if hasattr(on_width, '__iter__') and len(on_width) == 2 else [float(on_width)] * 2
-        self.off_width = off_width
+        try:
+            self.on_width = [float(x) for x in on_width] if hasattr(on_width, '__iter__') and len(on_width) == 2 else [float(on_width)] * 2
+            self.off_width = [float(x) for x in off_width] if hasattr(off_width, '__iter__') and len(off_width) == 2 else [float(off_width)] * 2
+        except TypeError:
+            raise TypeError("For constant period please input a single value, for randomized period please "
+                             "specify the lower and upper limit in a list")
 
     def paradigm(self):
+        """ contains the sequence of events intended for the stimulation
 
-        # TODO: simplify this bit
-        if self.__last_trial != self._trial:
-            self.__last_trial = self._trial
-            self.device.channel.write(b'S')
-
-
+        """
         def start_next_trial(dt):
             self._trial += 1
             self.stim.visible = True
-            pyglet.clock.schedule_once(end_trial, random.uniform(low=on_width[0], high=on_width[1]))
+            pyglet.clock.schedule_once(end_trial, random.uniform(self.on_width[0], self.on_width[1]))
         pyglet.clock.schedule_once(start_next_trial, 0)
-
 
         def end_trial(dt):
             POINTS = 240
@@ -218,16 +220,25 @@ class DisplayExperiment(BaseExperiment):
             if self._trial > self.trials:
                 pyglet.app.exit()  # exit the pyglet app
                 self.device.channel.close()  # close the serial communication channel
-            pyglet.clock.schedule_once(start_next_trial, random.uniform(low=off_width[0], high=off_width[1]))
+            pyglet.clock.schedule_once(start_next_trial, random.uniform(self.off_width[0], self.off_width[1]))
 
-
+    def send_msg_on_draw(self):
+        """ sends a msg through the serial channel on draw event
+        Args:
+                - msg: the msg that is intended to be sent to the device
+        """
+        # check if we are in a new trail (if yes, send a signal to the device and update __last_trial value)
+        msg = 'S'
+        if self.__last_trial != self._trial:
+            self.__last_trial = self._trial
+            self.device.channel.write(bytes(msg, 'utf-8'))
 
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
 
     """
     def _init__(self, *args, **kwargs):
-        super(self.__class__).__init__(*args, **kwargs)
+        super(self.__class__, self).__init__(*args, **kwargs)
 
     def paradigm(self):
         raise NotImplementedError()
@@ -239,7 +250,7 @@ class TotalExperiment(BaseExperiment):
     """
 
     def _init__(self, *args, **kwargs):
-        super(self.__class__).__init__(*args, **kwargs)
+        super(self.__class__, self).__init__(*args, **kwargs)
 
     def paradigm(self):
         vrl.Stim_without_tracking(window=self.window, mesh=self.stim.mesh)
