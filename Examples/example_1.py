@@ -1,7 +1,7 @@
 import VRLatency as vrl
 
 # connect to device
-arduino = vrl.Device()
+arduino = vrl.Arduino()
 arduino.connect(port='COM9', baudrate=250000)
 
 # create a window

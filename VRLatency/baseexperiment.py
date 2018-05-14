@@ -12,7 +12,7 @@ from itertools import cycle
 
 # from Stimulus import *
 
-class Device(object):
+class Arduino(object):
     """ Handles attributes and methods related to stimulation/recording device
 
     Attributes:
@@ -48,6 +48,23 @@ class Device(object):
     def read(self, n_points=240, packet_fmt='I2H'):
         return unpack('<' + packet_fmt * n_points, self.channel.read(8 * n_points))
 
+    def init_next_trial(self):
+        self.channel.write(bytes('S', 'utf-8'))
+
+    def init_experiment(self, exp_type):
+        """Can be 'Tracking', 'Display', or 'Total'"""
+        raise NotImplementedError
+
+    def ping(self):
+        """Returns True if Arduino is connected and has correct code loaded."""
+        self.channel.readline()
+        self.channel.write(bytes('are_you_ready?', 'utf-8'))
+        packet = self.channel.read(30)
+        response = unpack('<3c', packet)
+        return True if response == 'yes' else False
+
+
+
 
 class Window(pyglet.window.Window):
     """ Window object for the experiment
@@ -72,16 +89,17 @@ class Window(pyglet.window.Window):
         super().__init__(screen=screen, resizable=resizable, fullscreen=fullscreen, *args, **kwargs)
 
 
-class Stim():
+class Stim(object):
     """ initialize an stimulation object
 
     Attributes:
         mesh: the object appearing on the screen
 
     """
-    def __init__(self, type='Plane', position=(0, 0)):
+    def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0)):
         self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS, position=(0, 0, -3))
         self.position = position
+        self.color = tuple(color)
 
     @property
     def position(self):
@@ -90,6 +108,15 @@ class Stim():
     @position.setter
     def position(self, value):
         self.mesh.position.xy = value
+
+    @property
+    def color(self):
+        return self.mesh.uniforms['diffuse']
+
+    @color.setter
+    def color(self, values):
+        r, g, b = values
+        self.mesh.uniforms['diffuse'] = r, g, b
 
     def draw(self):
         self.mesh.draw()
@@ -104,17 +131,9 @@ class Data(object):
     """
 
     def __init__(self):
+        self.values = []
 
-        self._array = []
-
-    @property
-    def array(self):
-        return self._array
-
-    def record(self):
-        raise NotImplementedError()
-
-    def store(self):
+    def to_csv(self):
         raise NotImplementedError()
 
         # dd = np.array(data).reshape(-1, 3)
@@ -180,7 +199,7 @@ class BaseExperiment(object):
             self.stim.visible = False
         if self.device:
             dd = self.device.read(n_points=self.n_points, packet_fmt=self.packet_fmt)
-            self.data.array.extend(dd)
+            self.data.values.extend(dd)
         if self._trial > self.trials:
             pyglet.app.exit()  # exit the pyglet app
             if self.device:
