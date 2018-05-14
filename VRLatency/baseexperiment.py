@@ -100,7 +100,8 @@ class Stim(object):
         self.mesh.uniforms['diffuse'] = r, g, b
 
     def draw(self):
-        self.mesh.draw()
+        with rc.default_shader:
+            self.mesh.draw()
 
 
 class Data(object):
@@ -162,20 +163,21 @@ class BaseExperiment(pyglet.window.Window):
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
+    def on_draw(self):
+        self.clear()
+        self.stim.draw()
+        self.send_msg_on_draw()
+
     @property
     def trial(self):
         return self._trial
-
-    def on_draw(self):
-        self.clear()
-        with rc.default_shader:
-            self.stim.draw()
-            self.send_msg_on_draw()
 
     def start_next_trial(self, dt):
         self._trial += 1
         if self.stim:
             self.stim.visible = True
+        if self.arduino:
+            self.arduino.init_next_trial()
         self.paradigm()
         pyglet.clock.schedule_once(self.end_trial, next(self.on_width))
 
