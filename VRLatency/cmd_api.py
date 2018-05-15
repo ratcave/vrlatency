@@ -10,14 +10,10 @@ import VRLatency as vrl
 def main(mode, trials, port, baud):
 
     # connect to arduino
-    arduino = vrl.connect_to_device(port=port, baudrate=baud)
+    arduino = vrl.Arduino(experiment_type='Display', )
 
     # create an experiment objecta and attach the device to it
     exp = vrl.BaseExperiment(trials=trials, arduino=arduino)
-
-    exp.create_stim(type='Plane')
-    exp.stim.point_size = 20.
-    exp.stim.position.xyz = 0, 0, -3
 
     exp.run(mode=mode, on_width=.05, off_width=[.1, .3])
 
