@@ -1,4 +1,5 @@
 import serial
+import serial.tools.list_ports
 from struct import unpack
 
 
@@ -27,16 +28,14 @@ class Arduino(object):
 
     @staticmethod
     def find_all():
-        """ Display a list of connected devices to the machine
+        """ Display a list of connected devices to the machine"""
 
-        Returns:
-            list of the ports and the connected devices to this machine
-
-        """
-        raise NotImplementedError()
+        ports = list(serial.tools.list_ports.comports())
+        for p in ports:
+            print(p[:2])
 
     def disconnect(self):
-        """Disconnect the device."""
+        """Disconnect the device"""
         self.channel.close()
 
     @property
