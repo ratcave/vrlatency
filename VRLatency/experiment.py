@@ -89,6 +89,7 @@ class DisplayExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
 
     def run_trial(self):
+        """ a single trial"""
         self.clear()
         self.stim.draw()
         self.flip()
@@ -102,16 +103,15 @@ class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
 
     """
-    def run(self):
-        """ runs the experiment in the passed application window"""
-
-        for trial in range(1, self.trials+1):
-            pass
+    def run_trial(self):
+        """ a single trial"""
+        raise NotImplementedError
 
 
 class TotalExperiment(BaseExperiment):
     """ Experiment object for total latency measurement
 
     """
-    def run(self):
+    def run_trial(self):
+        """ a single trial"""
         raise NotImplementedError
