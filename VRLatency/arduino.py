@@ -11,9 +11,9 @@ class Arduino(object):
         is_connected (bool):
 
     """
-    pkt_formats = {'Tracking': 'I2H', 'Display': 'I2H', 'Total': 'I2H'}
-    pkt_size = {'Tracking': 8, 'Display': 8, 'Total': 8}
-    n_point_options = {'Tracking': 240, 'Display': 240, 'Total': 240}
+    pkt_formats = {'Tracking': 'I2H', 'Display': '-', 'Total': 'I3H?'}
+    pkt_size = {'Tracking': 8, 'Display': 0, 'Total': 11}
+    n_point_options = {'Tracking': 240, 'Display': 0, 'Total': 2000}
 
     def __init__(self, experiment_type, port, baudrate):
         """Can be 'Tracking', 'Display', or 'Total'"""
@@ -43,7 +43,7 @@ class Arduino(object):
     def is_connected(self):
         return self.channel.isOpen()
 
-    def read(self, n_points=240):
+    def read(self):
         return unpack('<' + self.packet_fmt * self.n_points, self.channel.read(self.packet_size * self.n_points))
 
     def write(self, msg):

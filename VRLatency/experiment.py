@@ -128,7 +128,7 @@ class TrackingExperiment(BaseExperiment):
         start_time = perf_counter()
         while (perf_counter() - start_time) < .04:  # period of one trial
             t, led_pos = perf_counter(), -10 * self.rigid_body.position.x
-            sleep(.001)  # to decrease the data point resolution to a milisecond
+            sleep(.001)  # to decrease the data point resolution to a millisecond
             self.data.values.append([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
 
         sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
@@ -138,7 +138,34 @@ class TrackingExperiment(BaseExperiment):
 class TotalExperiment(BaseExperiment):
     """ Experiment object for total latency measurement
 
+    NOTE: In this experiment the timing information is recorded by Arduino
+    === start of the trial
+    1. LED lights moves from one set of LEDs to another - timing info recorded
+    2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -> timing info recorded
+    * the same process is repeated
+    === end of the trial
+
     """
+
+    def __init__(self, stim, rigid_body, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
+
+        self.rigid_body = rigid_body
+        self.stim_with_tracking()
+
     def run_trial(self):
         """ a single trial"""
-        raise NotImplementedError
+        self.data.values.append(self.arduino.read())
+
+    def stim_with_tracking(self):
+
+        @self.event
+        def on_draw():
+            self.clear()
+            self.stim.draw()
+
+        def update(dt):
+            self.stim.position = -self.rigid_body.position.x * 1.6 - .39
+            self.stim.position = self.rigid_body.position.z - .15
+
+        pyglet.clock.schedule(update)
