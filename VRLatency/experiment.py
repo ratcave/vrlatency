@@ -5,7 +5,7 @@ import pyglet
 from pyglet.window import key
 import random
 from warnings import warn
-from time import sleep, time, perf_counter
+from time import sleep, perf_counter
 from .data import Data
 from itertools import cycle
 
@@ -60,6 +60,7 @@ class BaseExperiment(pyglet.window.Window):
             self.run_trial()
             if self.arduino:
                 dd = self.arduino.read()
+                # TODO: the bottom line is experiment specific, remove it from superclass
                 self.data.values.extend(dd)
         self.end()
 
@@ -135,6 +136,7 @@ class TrackingExperiment(BaseExperiment):
 
     #TODO: For the code on Arduino side add the start trial character
 
+
 class TotalExperiment(BaseExperiment):
     """ Experiment object for total latency measurement
 
@@ -155,7 +157,11 @@ class TotalExperiment(BaseExperiment):
 
     def run_trial(self):
         """ a single trial"""
+        # TODO: this is not running atm because pyglet app is running!
         self.data.values.append(self.arduino.read())
+
+        if self.current_trial == self.trials:
+            pyglet.app.exit()
 
     def stim_with_tracking(self):
 
@@ -165,7 +171,9 @@ class TotalExperiment(BaseExperiment):
             self.stim.draw()
 
         def update(dt):
+            # TODO: the adjustment here should become user inputs
             self.stim.position = -self.rigid_body.position.x * 1.6 - .39
             self.stim.position = self.rigid_body.position.z - .15
 
         pyglet.clock.schedule(update)
+        pyglet.app.run()
