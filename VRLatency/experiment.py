@@ -4,7 +4,6 @@ from abc import abstractmethod
 import pyglet
 from pyglet.window import key
 import random
-from itertools import cycle
 from warnings import warn
 from time import sleep
 from .data import Data
@@ -54,8 +53,7 @@ class BaseExperiment(pyglet.window.Window):
         """ runs the experiment in the passed application window"""
         for trial in range(1, self.trials + 1):
             self.dispatch_events()
-            if self.arduino:
-                self.arduino.init_next_trial()
+            self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
             if self.arduino:
                 dd = self.arduino.read()
@@ -71,14 +69,13 @@ class BaseExperiment(pyglet.window.Window):
             self.end()
 
 def _gen_iter(vals):
-    if not hasattr(vals, '__iter__'):
-        for val in cycle([vals]):
-            yield val
-    elif len(vals) == 2:
-        while True:
-            yield random.uniform(vals[0], vals[1])
-    else:
-        raise TypeError("'vals' must contain one or two values")
+    while True:
+        if not hasattr(vals, '__iter__'):
+                yield vals
+        elif len(vals) == 2:
+                yield random.uniform(vals[0], vals[1])
+        else:
+            raise TypeError("'vals' must contain one or two values")
 
 
 class DisplayExperiment(BaseExperiment):
