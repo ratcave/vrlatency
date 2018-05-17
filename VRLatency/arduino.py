@@ -32,7 +32,8 @@ class Arduino(object):
 
         ports = list(serial.tools.list_ports.comports())
         for p in ports:
-            print(p[:2])
+            if ('Arduino' or 'arduino') in str(p):
+                print(p)
 
     def disconnect(self):
         """Disconnect the device"""
