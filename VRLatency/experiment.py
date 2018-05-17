@@ -5,8 +5,9 @@ import pyglet
 from pyglet.window import key
 import random
 from warnings import warn
-from time import sleep
+from time import sleep, time, perf_counter
 from .data import Data
+from itertools import cycle
 
 
 class BaseExperiment(pyglet.window.Window):
@@ -41,6 +42,7 @@ class BaseExperiment(pyglet.window.Window):
         self.data = Data()
 
         self.trials = trials
+        self.current_trial = 0
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
@@ -53,6 +55,7 @@ class BaseExperiment(pyglet.window.Window):
         """ runs the experiment in the passed application window"""
         for trial in range(1, self.trials + 1):
             self.dispatch_events()
+            self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
             if self.arduino:
@@ -99,11 +102,38 @@ class DisplayExperiment(BaseExperiment):
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
 
+    NOTE: in this experiment the timing information is recorded on Python side:
+    === Start of trial
+    1. Movement is sent to Arduino by python (communication time is insignificant)
+    2. LEDs move on the VRLatency shield and at the same time the LED positions are being tracked
+    3. Timing between the movement command and changes in position are compared and the tracking delay is characterize
+    === End of trial
     """
+
+    def __init__(self, rigid_body, *args, **kwargs):
+        """ initialize a TrackigExperiment object
+
+        Args:
+                - rigid_body: is the object that has position attributes
+        """
+        super(self.__class__, self).__init__(*args, **kwargs)
+
+        self.rigid_body = rigid_body
+        self._pos = cycle(['L', 'R'])
+
     def run_trial(self):
         """ a single trial"""
-        raise NotImplementedError
+        next_pos = next(self._pos)
+        self.arduino.write(next_pos) if self.arduino else None
+        start_time = perf_counter()
+        while (perf_counter() - start_time) < .04:  # period of one trial
+            t, led_pos = perf_counter(), -10 * self.rigid_body.position.x
+            sleep(.001)  # to decrease the data point resolution to a milisecond
+            self.data.values.append([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
 
+        sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
+
+    #TODO: For the code on Arduino side add the start trial character
 
 class TotalExperiment(BaseExperiment):
     """ Experiment object for total latency measurement

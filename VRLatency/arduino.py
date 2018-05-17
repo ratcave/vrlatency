@@ -46,9 +46,13 @@ class Arduino(object):
     def read(self, n_points=240):
         return unpack('<' + self.packet_fmt * self.n_points, self.channel.read(self.packet_size * self.n_points))
 
-    def init_next_trial(self):
-        self.channel.write(bytes('S', 'utf-8'))
+    def write(self, msg):
+        self.channel.write(bytes(msg, 'utf-8'))
 
+    def init_next_trial(self):
+        self.write('S')
+
+    # TODO: Ad pinging to Arduino code
     def ping(self):
         """Returns True if Arduino is connected and has correct code loaded."""
         self.channel.readline()
