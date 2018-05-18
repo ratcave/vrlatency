@@ -14,7 +14,8 @@ class BaseExperiment(pyglet.window.Window):
     """ Experiment object integrates other components and let's use to run, record and store experiment data
 
     """
-    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None, on_width=.5, off_width=.5, *args, **kwargs):
+    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None,
+                 on_width=.5, off_width=.5, bckgrnd_color=(0, 0, 0), *args, **kwargs):
         """ Initialize an experiment object
 
         Args:
@@ -32,6 +33,8 @@ class BaseExperiment(pyglet.window.Window):
         if not arduino:
             warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
 
+        self.bckgrnd_color = bckgrnd_color
+        self._bckgrnd_color = bckgrnd_color
         self.stim = stim
         self.data = Data()
 
@@ -60,6 +63,15 @@ class BaseExperiment(pyglet.window.Window):
     def on_key_press(self, symbol, modifiers):
         if key.ESCAPE == symbol:
             self.end()
+
+    @property
+    def bckgrnd_color(self):
+        return self._bckgrnd_color
+
+    @bckgrnd_color.setter
+    def bckgrnd_color(self, value):
+        self._bckgrnd_color = value
+        pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
 
 class DisplayExperiment(BaseExperiment):
