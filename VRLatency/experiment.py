@@ -23,22 +23,16 @@ class BaseExperiment(pyglet.window.Window):
                 - path: path for saving the recorded data (if not given it will be saved in current directory)
         """
 
-
         platform = pyglet.window.get_platform()
         display = platform.get_default_display()
         screen = display.get_screens()[screen_ind]
         super().__init__(screen=screen, *args, **kwargs)
 
-        # create window
-
         self.arduino = arduino
         if not arduino:
             warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
 
-
         self.stim = stim
-
-        # create Data object
         self.data = Data()
 
         self.trials = trials
@@ -48,8 +42,7 @@ class BaseExperiment(pyglet.window.Window):
 
     def end(self):
         self.close()  # exit the pyglet app
-        if self.arduino:
-            self.arduino.disconnect()  # close the serial communication channel
+        self.arduino.disconnect() if self.arduino else None
 
     def run(self):
         """ runs the experiment in the passed application window"""
@@ -58,10 +51,6 @@ class BaseExperiment(pyglet.window.Window):
             self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
-            if self.arduino:
-                dd = self.arduino.read()
-                # TODO: the bottom line is experiment specific, remove it from superclass
-                self.data.values.extend(dd)
         self.end()
 
     @abstractmethod
@@ -71,15 +60,6 @@ class BaseExperiment(pyglet.window.Window):
     def on_key_press(self, symbol, modifiers):
         if key.ESCAPE == symbol:
             self.end()
-
-def _gen_iter(vals):
-    while True:
-        if not hasattr(vals, '__iter__'):
-                yield vals
-        elif len(vals) == 2:
-                yield random.uniform(vals[0], vals[1])
-        else:
-            raise TypeError("'vals' must contain one or two values")
 
 
 class DisplayExperiment(BaseExperiment):
@@ -98,6 +78,9 @@ class DisplayExperiment(BaseExperiment):
         self.clear()
         self.flip()
         sleep(next(self.off_width))
+        self.data.values.append(self.arduino.read()) if self.arduino else None
+
+        print(self.data.values)
 
 
 class TrackingExperiment(BaseExperiment):
@@ -146,34 +129,28 @@ class TotalExperiment(BaseExperiment):
     2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -> timing info recorded
     * the same process is repeated
     === end of the trial
-
     """
 
     def __init__(self, stim, rigid_body, *args, **kwargs):
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
 
         self.rigid_body = rigid_body
-        self.stim_with_tracking()
 
     def run_trial(self):
-        """ a single trial"""
-        # TODO: this is not running atm because pyglet app is running!
-        self.data.values.append(self.arduino.read())
+        """single trial"""
+        self.stim.position = -self.rigid_body.position.x * 1.6 - .39
+        self.stim.position = self.rigid_body.position.z - .15
+        self.clear()
+        self.stim.draw()
+        self.flip()
+        self.data.values.append(self.arduino.read()) if self.arduino else None
 
-        if self.current_trial == self.trials:
-            pyglet.app.exit()
 
-    def stim_with_tracking(self):
-
-        @self.event
-        def on_draw():
-            self.clear()
-            self.stim.draw()
-
-        def update(dt):
-            # TODO: the adjustment here should become user inputs
-            self.stim.position = -self.rigid_body.position.x * 1.6 - .39
-            self.stim.position = self.rigid_body.position.z - .15
-
-        pyglet.clock.schedule(update)
-        pyglet.app.run()
+def _gen_iter(vals):
+    while True:
+        if not hasattr(vals, '__iter__'):
+                yield vals
+        elif len(vals) == 2:
+                yield random.uniform(vals[0], vals[1])
+        else:
+            raise TypeError("values passed as on_width and off_width must contain one or two values")
