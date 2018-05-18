@@ -11,9 +11,9 @@ class Arduino(object):
         is_connected (bool):
 
     """
-    pkt_formats = {'Tracking': 'I2H', 'Display': 'I2H', 'Total': 'I2H'}
-    pkt_size = {'Tracking': 8, 'Display': 8, 'Total': 8}
-    n_point_options = {'Tracking': 240, 'Display': 240, 'Total': 240}
+    pkt_formats = {'Tracking': '-', 'Display': 'I2H', 'Total': 'I3H?'}
+    pkt_size = {'Tracking': 0, 'Display': 8, 'Total': 11}
+    n_point_options = {'Tracking': 0, 'Display': 100, 'Total': 2000}
 
     def __init__(self, experiment_type, port, baudrate):
         """Can be 'Tracking', 'Display', or 'Total'"""
@@ -32,7 +32,8 @@ class Arduino(object):
 
         ports = list(serial.tools.list_ports.comports())
         for p in ports:
-            print(p[:2])
+            if ('Arduino' or 'arduino') in str(p):
+                print(p)
 
     def disconnect(self):
         """Disconnect the device"""
@@ -42,12 +43,16 @@ class Arduino(object):
     def is_connected(self):
         return self.channel.isOpen()
 
-    def read(self, n_points=240):
+    def read(self):
         return unpack('<' + self.packet_fmt * self.n_points, self.channel.read(self.packet_size * self.n_points))
 
-    def init_next_trial(self):
-        self.channel.write(bytes('S', 'utf-8'))
+    def write(self, msg):
+        self.channel.write(bytes(msg, 'utf-8'))
 
+    def init_next_trial(self):
+        self.write('S')
+
+    # TODO: Add pinging to Arduino code
     def ping(self):
         """Returns True if Arduino is connected and has correct code loaded."""
         self.channel.readline()
