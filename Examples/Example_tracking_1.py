@@ -11,6 +11,6 @@ LED = client.rigid_bodies['LED']
 # create an experiment app
 myexp = vrl.TrackingExperiment(arduino=arduino,
                                rigid_body=LED,
-                               trials=2)
+                               trials=1000)
 
 myexp.run()

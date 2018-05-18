@@ -1,8 +1,5 @@
-// Left LEDs: 11, 12, 13
-// Right LEDs: 8, 9, 10
-
-short right_LEDs[] = {8, 9, 10}; 
-short left_LEDs[] = {11, 12, 13};  
+short right_LED = 12;
+short left_LED = 9;
 
 bool led_state = 0;
 int trial = 0;
@@ -13,39 +10,34 @@ int received_data = 0;
 void setup() {
   
   // initialize digital LED pin as an output.
-  for (int i=0; i<sizeof(right_LEDs); i++){
-    pinMode(right_LEDs[i], OUTPUT);
-    pinMode(left_LEDs[i], OUTPUT);
-    }
-
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(right_LED, OUTPUT);
+  pinMode(left_LED, OUTPUT);
+  
   // set the LEDs high or low
-  set_LEDs(left_LEDs, 3, HIGH);
-  set_LEDs(right_LEDs, 3, LOW);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(right_LED, HIGH);
+  digitalWrite(left_LED, LOW);
 
   // start seria comm
   Serial.begin(250000);       //  setup serial
-  Serial.write("\n");         // 1 byte
-  
+  Serial.write("\n");         // 1 byte 
 }
-
-void set_LEDs(short *array_of_LEDs, short array_size, bool level){
-  for (int i=0; i<array_size; i++){
-    digitalWrite(array_of_LEDs[i], level);
-    }
-  }
 
 void loop() {
   if (Serial.available() > 0) {
     received_data = Serial.read();
 
     if (received_data == 76){ // ord('L')
-      set_LEDs(left_LEDs, 3, HIGH);
-      set_LEDs(right_LEDs, 3, LOW);
+      digitalWrite(right_LED, LOW);
+      digitalWrite(left_LED, HIGH);
     }
 
     if (received_data == 82){ // ord('R')
-      set_LEDs(left_LEDs, 3, LOW);
-      set_LEDs(right_LEDs, 3, HIGH);
+      digitalWrite(right_LED, HIGH);
+      digitalWrite(left_LED, LOW);
     }
   }
 }

@@ -15,7 +15,7 @@ LED = client.rigid_bodies['LED']
 myexp = vrl.TotalExperiment(arduino=arduino,
                             stim=mystim,
                             rigid_body=LED,
-                            trials=10,
+                            trials=1000,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()

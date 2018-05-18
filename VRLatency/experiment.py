@@ -80,8 +80,6 @@ class DisplayExperiment(BaseExperiment):
         sleep(next(self.off_width))
         self.data.values.append(self.arduino.read()) if self.arduino else None
 
-        print(self.data.values)
-
 
 class TrackingExperiment(BaseExperiment):
     """ Experiment object for tracking latency measurement
@@ -100,7 +98,7 @@ class TrackingExperiment(BaseExperiment):
         Args:
                 - rigid_body: is the object that has position attributes
         """
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(self.__class__, self).__init__(*args, visible=False, **kwargs)
 
         self.rigid_body = rigid_body
         self._pos = cycle(['L', 'R'])
