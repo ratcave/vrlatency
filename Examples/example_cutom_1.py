@@ -14,15 +14,9 @@ class CustomExperiment(BaseExperiment):
 
     def run_trial(self):
         """ a single trial"""
+        self.stim.position = next(self.pos), 0
+        self.stim.color = next(self.color)
         self.clear()
-
-        for col, pos
-        
-        self.stim.position = next(self.pos), 0
-        self.stim.color = next(self.color)
-        self.stim.draw()
-        self.stim.position = next(self.pos), 0
-        self.stim.color = next(self.color)
         self.stim.draw()
         self.flip()
         sleep(.5)
@@ -38,7 +32,7 @@ def main():
 
     # create an experiment app
     myexp = CustomExperiment(#arduino=arduino,
-                             stim=mystim)
+                             stim=mystim, bckgrnd_color=(.2, .5, .2))
     myexp.run()
 
 
