@@ -1,5 +1,5 @@
-from VRLatency.experiment import BaseExperiment
-import VRLatency as vrl
+from vrlatency.experiment import BaseExperiment
+import vrlatency as vrl
 
 from time import sleep
 

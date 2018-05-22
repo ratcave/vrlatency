@@ -1,5 +1,5 @@
 import click
-import VRLatency as vrl
+import vrlatency as vrl
 
 @click.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
@@ -9,7 +9,7 @@ import VRLatency as vrl
 def main(experiment_type, trials, port, baudrate):
 
     # connect to arduino
-    # arduino = vrl.Arduino(experiment_type=experiment_type, port=port, baudrate=baudrate)
+    arduino = vrl.Arduino(experiment_type=experiment_type, port=port, baudrate=baudrate)
 
     # create an stimulus
     stim = vrl.Stimulus(position=(0, 0), color=(1, 0, 0))

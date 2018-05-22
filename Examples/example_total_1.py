@@ -1,4 +1,4 @@
-import VRLatency as vrl
+import vrlatency as vrl
 import natnetclient as nn
 
 # connect to the device

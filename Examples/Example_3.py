@@ -1,4 +1,4 @@
-import VRLatency as vrl
+import vrlatency as vrl
 
 # connect to the device
 arduino = vrl.Arduino(experiment_type='Display', port='COM9', baudrate=250000)
