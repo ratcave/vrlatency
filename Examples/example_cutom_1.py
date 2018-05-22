@@ -25,13 +25,14 @@ class CustomExperiment(BaseExperiment):
 
 def main():
     # connect to the device
-    # arduino = vrl.Arduino(experiment_type='Display', port='COM9', baudrate=250000)
+    arduino = vrl.Arduino(experiment_type='Display', port='COM9', baudrate=250000)
 
     # create a stimulation pattern
     mystim = vrl.Stimulus(position=(0, 0))
 
     # create an experiment app
-    myexp = CustomExperiment(#arduino=arduino,
+    myexp = CustomExperiment(arduino=arduino,
+                             fullscreen=True, screen_ind=1,
                              stim=mystim, bckgrnd_color=(.2, .5, .2))
     myexp.run()
 
