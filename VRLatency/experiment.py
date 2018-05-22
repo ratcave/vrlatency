@@ -136,8 +136,8 @@ class TotalExperiment(BaseExperiment):
 
     def run_trial(self):
         """single trial"""
-        self.stim.position = -self.rigid_body.position.x * 1.6 - .39
-        self.stim.position = self.rigid_body.position.z - .15
+        self.stim.position = -self.rigid_body.position.x * .5, 0
+        self.stim.mesh.update()
         self.clear()
         self.stim.draw()
         self.flip()
