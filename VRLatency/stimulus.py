@@ -14,17 +14,18 @@ class Stimulus(object):
 
     """
     def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0)):
-        self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS, position=(0, 0, -3))
+        self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS,
+                                                                             position=(position[0], position[1], -3))
         self.position = position
         self.color = tuple(color)
 
     @property
     def position(self):
-        return self.mesh.position.xy
+        return self.mesh.position.x, self.mesh.position.y
 
     @position.setter
     def position(self, value):
-        self.mesh.position.xy = value
+        self.mesh.position.x, self.mesh.position.y = value
 
     @property
     def color(self):
