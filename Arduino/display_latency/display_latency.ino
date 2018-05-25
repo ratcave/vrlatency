@@ -4,7 +4,7 @@ int analogPin_Right = 3;        // Right PhotoDiode connect on anaglog pin3
 bool start_recording = 0;
 int received_data = 0;
 int start_trial = 83;
-int trial = 0;
+int trial = 1;
 int i = 0;
 
 struct Packet {
@@ -23,22 +23,17 @@ void setup() {
 
 void loop() {
 
-  // ping test
   if (Serial.available() > 0) {
     received_data = Serial.read();
-
     if (received_data == start_trial){  // S
       trial += 1;
-//      start_recording = 1;
       i = 0;
     }
   }
 
-//  if (start_recording == 1){
     while (i < 240){
       Packet data = {micros(), analogRead(analogPin_Left)/50, trial};
       Serial.write((byte*)&data, 8);
       i++;
     }
-//  }
 }

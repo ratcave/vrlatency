@@ -34,7 +34,6 @@ class BaseExperiment(pyglet.window.Window):
             warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
 
         self.bckgrnd_color = bckgrnd_color
-        self._bckgrnd_color = bckgrnd_color
         self.stim = stim
         self.data = Data()
 
@@ -90,7 +89,7 @@ class DisplayExperiment(BaseExperiment):
         self.clear()
         self.flip()
         sleep(next(self.off_width))
-        self.data.values.append(self.arduino.read()) if self.arduino else None
+        self.data.values.extend(self.arduino.read()) if self.arduino else None
 
 
 class TrackingExperiment(BaseExperiment):
@@ -123,7 +122,7 @@ class TrackingExperiment(BaseExperiment):
         while (perf_counter() - start_time) < .04:  # period of one trial
             t, led_pos = perf_counter(), -10 * self.rigid_body.position.x
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.values.append([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
+            self.data.values.extend([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
 
         sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
 
@@ -153,7 +152,7 @@ class TotalExperiment(BaseExperiment):
         self.clear()
         self.stim.draw()
         self.flip()
-        self.data.values.append(self.arduino.read()) if self.arduino else None
+        self.data.values.extend(self.arduino.read()) if self.arduino else None
 
 
 def _gen_iter(vals):
