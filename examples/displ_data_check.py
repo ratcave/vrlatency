@@ -12,16 +12,10 @@ mystim.mesh.scale.xyz = .03, .2, 1
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
-                              trials=300,
+                              trials=1000,
                               fullscreen=True, screen_ind=1,
                               stim=mystim,
                               on_width=.05,
                               off_width=[0, .3])
 
 myexp.run()
-
-# reshape the data
-dd = np.array(myexp.data.values).reshape(-1, 3)
-
-plt.plot(dd[:, 1])
-plt.show()
