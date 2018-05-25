@@ -19,3 +19,6 @@ myexp = vrl.DisplayExperiment(arduino=myarduino,
                               off_width=[0, .3])
 
 myexp.run()
+
+# get the data
+dd = np.array(myexp.data.values).reshape(-1, 3)

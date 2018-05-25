@@ -1,10 +1,5 @@
 short right_LED = 12;
 short left_LED = 9;
-
-bool led_state = 0;
-int trial = 0;
-int counter = 1;
-int delay_count = 100;
 int received_data = 0;
 
 void setup() {
