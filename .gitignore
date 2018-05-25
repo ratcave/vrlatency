@@ -1,0 +1,10 @@
+vrlatency.egg-info/
+Measurements/
+build/
+dist/
+*.pyc
+*.pyd
+*~
+.idea
+.cache
+*.egg-info

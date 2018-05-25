@@ -1,0 +1,7 @@
+###### Requirements without Version Specifiers ######
+click
+#
+###### Requirements with Version Specifiers ######
+#
+###### Refer to other requirements files ######
+#
