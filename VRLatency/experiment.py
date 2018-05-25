@@ -103,7 +103,7 @@ class TrackingExperiment(BaseExperiment):
     === End of trial
     """
 
-    def __init__(self, rigid_body, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
         """ initialize a TrackigExperiment object
 
         Args:
@@ -112,17 +112,17 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
 
         self.rigid_body = rigid_body
-        self._pos = cycle(['L', 'R'])
+        self.trial_period = trial_period
+        self.amplify_dist = amplify_dist
+
 
     def run_trial(self):
         """ a single trial"""
-        next_pos = next(self._pos)
-        self.arduino.write(next_pos) if self.arduino else None
         start_time = perf_counter()
-        while (perf_counter() - start_time) < .04:  # period of one trial
-            t, led_pos = perf_counter(), -10 * self.rigid_body.position.x
+        while (perf_counter() - start_time) < self.trial_period:
+            t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.values.extend([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
+            self.data.extend([start_time, t, led_pos, self.current_trial])
 
         sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
 
@@ -147,12 +147,17 @@ class TotalExperiment(BaseExperiment):
 
     def run_trial(self):
         """single trial"""
-        self.stim.position = -self.rigid_body.position.x * .5, 0
-        self.stim.mesh.update()
-        self.clear()
-        self.stim.draw()
-        self.flip()
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
+        new_pos = -self.rigid_body.position.x * .5, 0
+        # check if the position has changes
+        has_moved = abs(self.stim.position[0] - new_pos[0]) < .00001
+        print(has_moved)
+        if (self.current_trial == 1) or has_moved:
+            self.stim.position = new_pos
+            self.clear()
+            self.stim.draw()
+            self.flip()
+
+        self.data.extend(self.arduino.read()) if self.arduino else None
 
 
 def _gen_iter(vals):

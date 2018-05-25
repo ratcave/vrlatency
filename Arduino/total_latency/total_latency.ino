@@ -55,11 +55,9 @@ void loop() {
       digitalWrite(left_LED, LOW);
       led_state = 1;
       }
-      
   }
-    
+  
   Packet data = {micros(), analogRead(analogPin_Left)/50, analogRead(analogPin_Right)/50, trial, led_state};
   Serial.write((byte*)&data, 11);
-  
   counter++;
 }

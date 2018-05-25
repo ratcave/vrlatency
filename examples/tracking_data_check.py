@@ -16,4 +16,4 @@ myexp = vrl.TrackingExperiment(arduino=myarduino,
 myexp.run()
 
 # get the data
-dd = np.array(myexp.data.values).reshape(-1, 5)
+dd = np.array(myexp.data.values).reshape(-1, 4)

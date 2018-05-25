@@ -1,6 +1,7 @@
 short right_LED = 12;
 short left_LED = 9;
 int received_data = 0;
+bool toggle = true;
 
 void setup() {
   
@@ -24,15 +25,14 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     received_data = Serial.read();
-
-    if (received_data == 76){ // ord('L')
+    toggle = !toggle;
+    if(toggle){
       digitalWrite(right_LED, LOW);
       digitalWrite(left_LED, HIGH);
-    }
-
-    if (received_data == 82){ // ord('R')
+      }
+    else{
       digitalWrite(right_LED, HIGH);
       digitalWrite(left_LED, LOW);
-    }
+      }
   }
 }
