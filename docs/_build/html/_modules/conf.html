@@ -44,7 +44,7 @@
 <span class="kn">from</span> <span class="nn">tolist</span> <span class="k">import</span> <span class="n">tolist</span>
 
 
-<div class="viewcode-block" id="SectionProxy"><a class="viewcode-back" href="../docs/conf.html#conf.SectionProxy">[docs]</a><span class="nd">@public</span>
+<div class="viewcode-block" id="SectionProxy"><a class="viewcode-back" href="../source/conf.html#conf.SectionProxy">[docs]</a><span class="nd">@public</span>
 <span class="k">class</span> <span class="nc">SectionProxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_conf</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_section</span> <span class="o">=</span> <span class="kc">None</span>
@@ -81,19 +81,19 @@
     <span class="k">def</span> <span class="nf">_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SectionProxy.get"><a class="viewcode-back" href="../docs/conf.html#conf.SectionProxy.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SectionProxy.get"><a class="viewcode-back" href="../source/conf.html#conf.SectionProxy.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get key value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SectionProxy.set"><a class="viewcode-back" href="../docs/conf.html#conf.SectionProxy.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="SectionProxy.set"><a class="viewcode-back" href="../source/conf.html#conf.SectionProxy.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;set key value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SectionProxy.delete"><a class="viewcode-back" href="../docs/conf.html#conf.SectionProxy.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SectionProxy.delete"><a class="viewcode-back" href="../source/conf.html#conf.SectionProxy.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;delete section&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">unset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SectionProxy.keys"><a class="viewcode-back" href="../docs/conf.html#conf.SectionProxy.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SectionProxy.keys"><a class="viewcode-back" href="../source/conf.html#conf.SectionProxy.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;return section keys&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">)</span></div>
 
@@ -131,7 +131,7 @@
         <span class="k">return</span> <span class="s1">&#39;&lt;Section: </span><span class="si">{0}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Conf"><a class="viewcode-back" href="../docs/conf.html#conf.Conf">[docs]</a><span class="nd">@public</span>
+<div class="viewcode-block" id="Conf"><a class="viewcode-back" href="../source/conf.html#conf.Conf">[docs]</a><span class="nd">@public</span>
 <span class="k">class</span> <span class="nc">Conf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_parser</span> <span class="o">=</span> <span class="kc">None</span>
@@ -151,13 +151,13 @@
     <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># read only</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span>
 
-<div class="viewcode-block" id="Conf.get"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.get"><a class="viewcode-back" href="../source/conf.html#conf.Conf.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>  <span class="c1"># NoOptionError, NoSectionError</span>
             <span class="k">return</span> <span class="n">default</span></div>
 
-<div class="viewcode-block" id="Conf.set"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.set"><a class="viewcode-back" href="../source/conf.html#conf.Conf.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
@@ -165,16 +165,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Conf.items"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.items"><a class="viewcode-back" href="../source/conf.html#conf.Conf.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Conf.remove_option"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.remove_option">[docs]</a>    <span class="k">def</span> <span class="nf">remove_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.remove_option"><a class="viewcode-back" href="../source/conf.html#conf.Conf.remove_option">[docs]</a>    <span class="k">def</span> <span class="nf">remove_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">tolist</span><span class="p">(</span><span class="n">option</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">remove_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Conf.remove_section"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.remove_section">[docs]</a>    <span class="k">def</span> <span class="nf">remove_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.remove_section"><a class="viewcode-back" href="../source/conf.html#conf.Conf.remove_section">[docs]</a>    <span class="k">def</span> <span class="nf">remove_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tolist</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
             <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">object</span><span class="p">:</span>
@@ -182,27 +182,27 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">remove_section</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Conf.save"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.save"><a class="viewcode-back" href="../source/conf.html#conf.Conf.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autosave</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Conf.write"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.write"><a class="viewcode-back" href="../source/conf.html#conf.Conf.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Conf.add_section"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.add_section">[docs]</a>    <span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.add_section"><a class="viewcode-back" href="../source/conf.html#conf.Conf.add_section">[docs]</a>    <span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">tolist</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Conf.has_section"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.has_section">[docs]</a>    <span class="k">def</span> <span class="nf">has_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.has_section"><a class="viewcode-back" href="../source/conf.html#conf.Conf.has_section">[docs]</a>    <span class="k">def</span> <span class="nf">has_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="n">section</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Conf.has_option"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.has_option">[docs]</a>    <span class="k">def</span> <span class="nf">has_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.has_option"><a class="viewcode-back" href="../source/conf.html#conf.Conf.has_option">[docs]</a>    <span class="k">def</span> <span class="nf">has_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Conf.options"><a class="viewcode-back" href="../docs/conf.html#conf.Conf.options">[docs]</a>    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+<div class="viewcode-block" id="Conf.options"><a class="viewcode-back" href="../source/conf.html#conf.Conf.options">[docs]</a>    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">section</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>

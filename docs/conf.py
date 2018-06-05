@@ -19,11 +19,10 @@ sys.path.insert(0, os.path.abspath('..'))
 from mock import Mock as MagicMock
 
 
-
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
-            return Mock()
+        return Mock()
 
     def __len__(self):
         return 3  # Hacky patch
@@ -57,6 +56,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinxcontrib.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

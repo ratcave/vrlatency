@@ -11,6 +11,7 @@ Welcome to VRLatency's documentation!
    :caption: Contents:
 
    introduction
+   quickstart
    vrlatency
 
 Indices and tables

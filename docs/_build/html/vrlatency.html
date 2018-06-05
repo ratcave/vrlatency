@@ -15,7 +15,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Introduction" href="introduction.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -42,11 +42,17 @@
 <em class="property">class </em><code class="descclassname">vrlatency.arduino.</code><code class="descname">Arduino</code><span class="sig-paren">(</span><em>port</em>, <em>baudrate</em>, <em>packet_fmt</em>, <em>packet_size</em>, <em>n_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles attributes and methods related to stimulation/recording device</p>
-<dl class="docutils">
-<dt>Attributes:</dt>
-<dd>channel:
-is_connected (bool):</dd>
-</dl>
+<dl class="attribute">
+<dt id="vrlatency.arduino.Arduino.channel">
+<code class="descname">channel</code><a class="headerlink" href="#vrlatency.arduino.Arduino.channel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vrlatency.arduino.Arduino.is_connected">
+<code class="descname">is_connected</code><a class="headerlink" href="#vrlatency.arduino.Arduino.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.disconnect">
 <code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.disconnect" title="Permalink to this definition">¶</a></dt>
@@ -71,8 +77,8 @@ is_connected (bool):</dd>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="vrlatency.arduino.Arduino.is_connected">
-<code class="descname">is_connected</code><a class="headerlink" href="#vrlatency.arduino.Arduino.is_connected" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">is_connected</code></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -109,10 +115,12 @@ is_connected (bool):</dd>
 <em class="property">class </em><code class="descclassname">vrlatency.data.</code><code class="descname">Data</code><a class="reference internal" href="_modules/vrlatency/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data object handling data-related matters</p>
-<dl class="docutils">
-<dt>Attributes:</dt>
-<dd>values: stores the recorded data during the experiment (if record is set to True, and there exist a recording device)</dd>
-</dl>
+<dl class="attribute">
+<dt id="vrlatency.data.Data.values">
+<code class="descname">values</code><a class="headerlink" href="#vrlatency.data.Data.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>stores the recorded data during the experiment (if record is set to True, and there exist a recording device)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="vrlatency.data.Data.analyze">
 <code class="descname">analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/data.html#Data.analyze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.data.Data.analyze" title="Permalink to this definition">¶</a></dt>
@@ -259,10 +267,12 @@ event if the <code class="docutils literal notranslate"><span class="pre">ESC</s
 <em class="property">class </em><code class="descclassname">vrlatency.stimulus.</code><code class="descname">Stimulus</code><span class="sig-paren">(</span><em>type='Plane'</em>, <em>color=(1.0</em>, <em>1.0</em>, <em>1.0)</em>, <em>position=(0</em>, <em>0)</em>, <em>size=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/stimulus.html#Stimulus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.stimulus.Stimulus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>initialize an stimulation object</p>
-<dl class="docutils">
-<dt>Attributes:</dt>
-<dd>mesh: the object appearing on the screen</dd>
-</dl>
+<dl class="attribute">
+<dt id="vrlatency.stimulus.Stimulus.mesh">
+<code class="descname">mesh</code><a class="headerlink" href="#vrlatency.stimulus.Stimulus.mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>the object appearing on the screen</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="vrlatency.stimulus.Stimulus.color">
 <code class="descname">color</code><a class="headerlink" href="#vrlatency.stimulus.Stimulus.color" title="Permalink to this definition">¶</a></dt>
@@ -314,7 +324,7 @@ event if the <code class="docutils literal notranslate"><span class="pre">ESC</s
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">Quick Start</a></li>
   </ul></li>
 </ul>
 </div>
