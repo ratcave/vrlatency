@@ -14,10 +14,11 @@ client = natnet.NatClient()
 led = client.rigid_bodies['LED']
 
 # create an experiment app
-myexp = vrl.TotalExperiment(#arduino=myarduino,
+myexp = vrl.TotalExperiment(arduino=myarduino,
                             stim=mystim,
+                            on_width=[.01, .03],
                             rigid_body=led,
-                            trials=1000,
+                            trials=100,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()
