@@ -13,7 +13,7 @@ class Arduino(object):
     """
     pkt_formats = {'Tracking': '-', 'Display': 'I2H', 'Total': 'I3H?'}
     pkt_size = {'Tracking': 0, 'Display': 8, 'Total': 11}
-    n_point_options = {'Tracking': 0, 'Display': 100, 'Total': 2000}
+    n_point_options = {'Tracking': 0, 'Display': 100, 'Total': 500}
 
     def __init__(self, experiment_type, port, baudrate):
         """Can be 'Tracking', 'Display', or 'Total'"""

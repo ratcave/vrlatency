@@ -16,6 +16,7 @@ class Stimulus(object):
     def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0)):
         self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS,
                                                                              position=(position[0], position[1], -3))
+        # self.mesh.uniforms['flat_shader'] = True
         self.position = position
         self.color = tuple(color)
 

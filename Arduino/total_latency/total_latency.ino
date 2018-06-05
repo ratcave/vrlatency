@@ -5,8 +5,8 @@ int analogPin_Right = 3;        // Right PhotoDiode connect on anaglog pin3
 
 bool led_state = 0;
 int trial = 0;
-int counter = 1;
-int delay_count = 100;
+int i = 0;
+int pkt_n_point = 500;  // make sure this value is similar to python side
 
 struct Packet {
   unsigned long time_m;
@@ -37,14 +37,12 @@ void setup() {
 }
 
 void loop() {
-  
-  // switch LEDs and send timing data
-  if (counter==delay_count){
-    
+
+
+  if (Serial.available() > 0){
+    Serial.read();
     trial++;
-    counter = 1;
-    delay_count = random(100, 300); // this keeps the minimum interval at 100 - necessary for window!
-    
+
     if (led_state){
       digitalWrite(right_LED, LOW);
       digitalWrite(left_LED, HIGH);
@@ -55,9 +53,10 @@ void loop() {
       digitalWrite(left_LED, LOW);
       led_state = 1;
       }
-  }
-  
-  Packet data = {micros(), analogRead(analogPin_Left)/50, analogRead(analogPin_Right)/50, trial, led_state};
-  Serial.write((byte*)&data, 11);
-  counter++;
+    
+    for (i=0; i<pkt_n_point; i++){
+      Packet data = {micros(), analogRead(analogPin_Left)/50, analogRead(analogPin_Right)/50, trial, led_state};
+      Serial.write((byte*)&data, 11);
+      }
+    }
 }

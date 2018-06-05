@@ -104,7 +104,7 @@ class TrackingExperiment(BaseExperiment):
     """
 
     def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
-        """ initialize a TrackigExperiment object
+        """ initialize a Tracking Experiment object
 
         Args:
                 - rigid_body: is the object that has position attributes
@@ -115,7 +115,6 @@ class TrackingExperiment(BaseExperiment):
         self.trial_period = trial_period
         self.amplify_dist = amplify_dist
 
-
     def run_trial(self):
         """ a single trial"""
         start_time = perf_counter()
@@ -125,8 +124,6 @@ class TrackingExperiment(BaseExperiment):
             self.data.extend([start_time, t, led_pos, self.current_trial])
 
         sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
-
-    #TODO: For the code on Arduino side add the start trial character
 
 
 class TotalExperiment(BaseExperiment):
@@ -147,17 +144,12 @@ class TotalExperiment(BaseExperiment):
 
     def run_trial(self):
         """single trial"""
-        new_pos = -self.rigid_body.position.x * .5, 0
-        # check if the position has changes
-        has_moved = abs(self.stim.position[0] - new_pos[0]) < .00001
-        print(has_moved)
-        if (self.current_trial == 1) or has_moved:
-            self.stim.position = new_pos
-            self.clear()
-            self.stim.draw()
-            self.flip()
-
-        self.data.extend(self.arduino.read()) if self.arduino else None
+        self.stim.position = -self.rigid_body.position.x * .5, 0
+        self.clear()
+        self.stim.draw()
+        self.flip()
+        sleep(next(self.on_width))
+        self.data.values.extend(self.arduino.read()) if self.arduino else None
 
 
 def _gen_iter(vals):
