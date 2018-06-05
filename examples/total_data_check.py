@@ -2,11 +2,10 @@ import vrlatency as vrl
 import natnetclient as natnet
 import numpy as np
 
-myarduino = vrl.Arduino(port='COM9', baudrate=250000, experiment_type='Total')
+myarduino = vrl.Arduino.from_experiment_type(port='COM9', baudrate=250000, experiment_type='Total')
 
 # create a stimulation pattern
-mystim = vrl.Stimulus(position=(0, 0), color=(0, 0, 0))
-mystim.mesh.point_size = 5
+mystim = vrl.Stimulus(position=(0, 0), color=(1, 1, 1), size=5)
 mystim.mesh.scale.xyz = .03, .2, 1
 
 # specify the object that is being tracked

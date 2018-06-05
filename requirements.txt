@@ -1,5 +1,10 @@
 ###### Requirements without Version Specifiers ######
 click
+ratcave
+conf
+sphinx
+mock
+
 #
 ###### Requirements with Version Specifiers ######
 #

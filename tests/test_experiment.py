@@ -4,8 +4,8 @@ import natnetclient as natnet
 
 
 def test_total_tracking():
-    myarduino = vrl.Arduino(port='COM9', baudrate=250000, experiment_type='Total')
-    mystim = vrl.Stimulus(position=(0, 0), color=(0, 0, 0))
+    myarduino = vrl.Arduino.from_experiment_type(port='COM9', baudrate=250000, experiment_type='Total')
+    mystim = vrl.Stimulus(position=(0, 0), color=(1, 1, 1))
     mystim.mesh.point_size = 5
     mystim.mesh.scale.xyz = .03, .2, 1
     client = natnet.NatClient()

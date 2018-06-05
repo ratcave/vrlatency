@@ -6,5 +6,6 @@ dist/
 *.pyd
 *~
 .idea
+.pytest_cache
 .cache
 *.egg-info

@@ -11,20 +11,33 @@ class Arduino(object):
         is_connected (bool):
 
     """
-    pkt_formats = {'Tracking': '-', 'Display': 'I2H', 'Total': 'I3H?'}
-    pkt_size = {'Tracking': 0, 'Display': 8, 'Total': 11}
-    n_point_options = {'Tracking': 0, 'Display': 100, 'Total': 500}
+    options = {'Display': dict(packet_fmt='I2H', packet_size=8, n_points=100),
+               'Total': dict(packet_fmt='I3H?', packet_size=11, n_points=500),
+               'Tracking': dict(packet_fmt='-', packet_size=0, n_points=0),
+               }
 
-    def __init__(self, experiment_type, port, baudrate):
-        """Can be 'Tracking', 'Display', or 'Total'"""
+    def __init__(self, port, baudrate, packet_fmt, packet_size, n_points):
+        """
+        Interfaces and Connects to an arduino running the VRLatency programs.
+
+        Arguments:
+            - port (str): The port the arduino is conected on (ex: 'COM8')
+            - baudrate (int): The baud rate for the arduino connection.
+        """
         self.port = port
         self.baudrate = baudrate
+        self.packet_fmt = packet_fmt
+        self.packet_size = packet_size
+        self.n_points = n_points
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
-        self.experiment_type = experiment_type
-        self.packet_fmt = self.pkt_formats[experiment_type]
-        self.packet_size = self.pkt_size[experiment_type]
-        self.n_points = self.n_point_options[experiment_type]
         self.channel.readline()
+
+    @classmethod
+    def from_experiment_type(cls, experiment_type, *args, **kwargs):
+        """Auto-gen Arduino params from experiment_type ('Tracking', 'Display', or 'Total')"""
+        options = cls.options[experiment_type].copy()
+        options.update(kwargs)
+        return cls(*args, **options)
 
     @staticmethod
     def find_all():
