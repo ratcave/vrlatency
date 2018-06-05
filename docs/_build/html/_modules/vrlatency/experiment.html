@@ -42,17 +42,32 @@
 
 
 <div class="viewcode-block" id="BaseExperiment"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.BaseExperiment">[docs]</a><span class="k">class</span> <span class="nc">BaseExperiment</span><span class="p">(</span><span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">Window</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Experiment object integrates other components and let&#39;s use to run, record and store experiment data</span>
+    <span class="sd">&quot;&quot;&quot;Experiment abstract base method</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        - arduino:</span>
+<span class="sd">        - bckgrnd_color:</span>
+<span class="sd">        - stim:</span>
+<span class="sd">        - data:</span>
+<span class="sd">        - trials:</span>
+<span class="sd">        - current_trial:</span>
+<span class="sd">        - on_width:</span>
+<span class="sd">        - off_width:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arduino</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">screen_ind</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">on_width</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">off_width</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">bckgrnd_color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize an experiment object</span>
+        <span class="sd">&quot;&quot;&quot;Integrates other components and let&#39;s use to run, record and store experiment data</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">                - trials: number of trials</span>
-<span class="sd">                - filename: name for the recorded data</span>
-<span class="sd">                - path: path for saving the recorded data (if not given it will be saved in current directory)</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            - arduino (Arduino obj, optional): Arduino object used for recording and/or movement simulation</span>
+<span class="sd">            - screen_ind (int, optional): Specifies the screen in which the window app will be displayes</span>
+<span class="sd">            - trials (int, optional): Number of trials</span>
+<span class="sd">            - stim (Stimulation obj, optional): Stimulation object to be displayed by the display/projector</span>
+<span class="sd">            - on_width (float, optional): Time period for the stimulus to be visible</span>
+<span class="sd">            - off_width (float, optional): Time period for the stimulus to be invisible</span>
+<span class="sd">            - bckgrnd_color (float, optional): Backgorund color of experiment window app</span>
+<span class="sd">            - *args, **kwargs: other arguments of pyglet Window class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">platform</span> <span class="o">=</span> <span class="n">pyglet</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_platform</span><span class="p">()</span>
@@ -74,11 +89,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">off_width</span> <span class="o">=</span> <span class="n">_gen_iter</span><span class="p">(</span><span class="n">off_width</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseExperiment.end"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.BaseExperiment.end">[docs]</a>    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># exit the pyglet app</span>
+        <span class="sd">&quot;&quot;&quot;Ends the experiment by closing the app window and disconnecting arduino&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arduino</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arduino</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="BaseExperiment.run"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.BaseExperiment.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; runs the experiment in the passed application window&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Runs the experiment&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trials</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_trial</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -88,31 +104,36 @@
 
 <div class="viewcode-block" id="BaseExperiment.run_trial"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.BaseExperiment.run_trial">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">run_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A single trial&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="BaseExperiment.on_key_press"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.BaseExperiment.on_key_press">[docs]</a>    <span class="k">def</span> <span class="nf">on_key_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">modifiers</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Key press event for SPACE key&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">ESCAPE</span> <span class="o">==</span> <span class="n">symbol</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bckgrnd_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Background color getter&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bckgrnd_color</span>
 
     <span class="nd">@bckgrnd_color</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">bckgrnd_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Background color setter&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bckgrnd_color</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">pyglet</span><span class="o">.</span><span class="n">gl</span><span class="o">.</span><span class="n">glClearColor</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DisplayExperiment"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.DisplayExperiment">[docs]</a><span class="k">class</span> <span class="nc">DisplayExperiment</span><span class="p">(</span><span class="n">BaseExperiment</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Experiment object to measure display latency measurement</span>
+    <span class="sd">&quot;&quot;&quot;Measures display latency&quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stim</span><span class="o">=</span><span class="n">stim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DisplayExperiment.run_trial"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.DisplayExperiment.run_trial">[docs]</a>    <span class="k">def</span> <span class="nf">run_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; a single trial&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A single trial&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
@@ -124,30 +145,32 @@
 
 
 <div class="viewcode-block" id="TrackingExperiment"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.TrackingExperiment">[docs]</a><span class="k">class</span> <span class="nc">TrackingExperiment</span><span class="p">(</span><span class="n">BaseExperiment</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Experiment object for tracking latency measurement</span>
+    <span class="sd">&quot;&quot;&quot;Measures tracking latency</span>
 
-<span class="sd">    NOTE: in this experiment the timing information is recorded on Python side:</span>
-<span class="sd">    === Start of trial</span>
-<span class="sd">    1. Movement is sent to Arduino by python (communication time is insignificant)</span>
-<span class="sd">    2. LEDs move on the VRLatency shield and at the same time the LED positions are being tracked</span>
-<span class="sd">    3. Timing between the movement command and changes in position are compared and the tracking delay is characterize</span>
-<span class="sd">    === End of trial</span>
+<span class="sd">    NOTES: </span>
+<span class="sd">        In this experiment the timing information is recorded on Python side. </span>
+<span class="sd">        here is a description of a single trial:</span>
+<span class="sd">        1. Movement is sent to Arduino by python (communication time is insignificant)</span>
+<span class="sd">        2. LEDs move on the VRLatency shield and at the same time the LED positions are being tracked</span>
+<span class="sd">        3. Timing between the movement command and changes in position are compared and the tracking delay is characterize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rigid_body</span><span class="p">,</span> <span class="n">trial_period</span><span class="o">=.</span><span class="mi">04</span><span class="p">,</span> <span class="n">amplify_dist</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; initialize a Tracking Experiment object</span>
+        <span class="sd">&quot;&quot;&quot; Integrates all the needed elements for tracking latency measuremnt</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">                - rigid_body: is the object that has position attributes</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            - rigid_body (tracking obj): Tracking object that has position attributes</span>
+<span class="sd">            - trial_period (float, optional): Period of a single trial</span>
+<span class="sd">            - amplify_dist (float, optional): Amplification factor for stimulus distance, based on tracked object&#39;s position</span>
+<span class="sd">            - *args, **kwargs: other arguments accepted by BaseExperiment class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">rigid_body</span> <span class="o">=</span> <span class="n">rigid_body</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trial_period</span> <span class="o">=</span> <span class="n">trial_period</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amplify_dist</span> <span class="o">=</span> <span class="n">amplify_dist</span>
 
 <div class="viewcode-block" id="TrackingExperiment.run_trial"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.TrackingExperiment.run_trial">[docs]</a>    <span class="k">def</span> <span class="nf">run_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; a single trial&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A single trial&quot;&quot;&quot;</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
         <span class="k">while</span> <span class="p">(</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">trial_period</span><span class="p">:</span>
             <span class="n">t</span><span class="p">,</span> <span class="n">led_pos</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplify_dist</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rigid_body</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span>
@@ -158,23 +181,30 @@
 
 
 <div class="viewcode-block" id="TotalExperiment"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.TotalExperiment">[docs]</a><span class="k">class</span> <span class="nc">TotalExperiment</span><span class="p">(</span><span class="n">BaseExperiment</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Experiment object for total latency measurement</span>
+    <span class="sd">&quot;&quot;&quot;Experiment object for total latency measurement</span>
 
-<span class="sd">    NOTE: In this experiment the timing information is recorded by Arduino</span>
-<span class="sd">    === start of the trial</span>
-<span class="sd">    1. LED lights moves from one set of LEDs to another - timing info recorded</span>
-<span class="sd">    2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -&gt; timing info recorded</span>
-<span class="sd">    * the same process is repeated</span>
-<span class="sd">    === end of the trial</span>
+<span class="sd">    NOTES: </span>
+<span class="sd">        In this experiment the timing information is recorded by Arduino</span>
+<span class="sd">        Here is a description of a single trial:</span>
+<span class="sd">        1. LED lights moves from one set of LEDs to another - timing info recorded</span>
+<span class="sd">        2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -&gt; timing info recorded</span>
+<span class="sd">        * the same process is repeated</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="n">rigid_body</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stim</span><span class="o">=</span><span class="n">stim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot; Integrates all the needed elements for total latency measuremnt</span>
 
+<span class="sd">        Arguments:</span>
+<span class="sd">            - rigid_body (tracking obj): Tracking object that has position attributes</span>
+<span class="sd">            - stim (Stimulus obj, optional): Stimulation object to be displayed by the display/projector</span>
+<span class="sd">            - *args, **kwargs: other arguments accepted by BaseExperiment class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stim</span><span class="o">=</span><span class="n">stim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rigid_body</span> <span class="o">=</span> <span class="n">rigid_body</span>
 
 <div class="viewcode-block" id="TotalExperiment.run_trial"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.experiment.TotalExperiment.run_trial">[docs]</a>    <span class="k">def</span> <span class="nf">run_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;single trial&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A single trial&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rigid_body</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
@@ -184,11 +214,12 @@
 
 
 <span class="k">def</span> <span class="nf">_gen_iter</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator function for on and off width given one or two values&quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">vals</span>
+            <span class="k">yield</span> <span class="n">vals</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;values passed as on_width and off_width must contain one or two values&quot;</span><span class="p">)</span>
 </pre></div>

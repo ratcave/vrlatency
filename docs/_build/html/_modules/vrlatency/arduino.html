@@ -39,9 +39,12 @@
     <span class="sd">&quot;&quot;&quot; Handles attributes and methods related to stimulation/recording device</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        channel:</span>
-<span class="sd">        is_connected (bool):</span>
-
+<span class="sd">        - port:</span>
+<span class="sd">        - baudrate:</span>
+<span class="sd">        - packet_fmt:</span>
+<span class="sd">        - packet_size:</span>
+<span class="sd">        - n_points:</span>
+<span class="sd">        - channel:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Display&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">packet_fmt</span><span class="o">=</span><span class="s1">&#39;I2H&#39;</span><span class="p">,</span> <span class="n">packet_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
                <span class="s1">&#39;Total&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">packet_fmt</span><span class="o">=</span><span class="s1">&#39;I3H?&#39;</span><span class="p">,</span> <span class="n">packet_size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">500</span><span class="p">),</span>
@@ -73,8 +76,7 @@
 
 <div class="viewcode-block" id="Arduino.find_all"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.arduino.Arduino.find_all">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">find_all</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Display a list of connected devices to the machine&quot;&quot;&quot;</span>
-
+        <span class="sd">&quot;&quot;&quot; Displays the connected arduino devices to the machine&quot;&quot;&quot;</span>
         <span class="n">ports</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">serial</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">list_ports</span><span class="o">.</span><span class="n">comports</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;Arduino&#39;</span> <span class="ow">or</span> <span class="s1">&#39;arduino&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
@@ -86,20 +88,36 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Returns True if arduino is connected, and False otherwise.&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">isOpen</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Arduino.read"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.arduino.Arduino.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads data packets sent over serial channel by arduino</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - list: data recorded by arduino</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">packet_fmt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_points</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Arduino.write"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.arduino.Arduino.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write to arduino over serial channel</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            - msg (str): message to be sent to arduino</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Arduino.init_next_trial"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.arduino.Arduino.init_next_trial">[docs]</a>    <span class="k">def</span> <span class="nf">init_next_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends a message to arduino to signal start of a trial&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">)</span></div>
 
     <span class="c1"># TODO: Add pinging to Arduino code (added to total, but not others!)</span>
 <div class="viewcode-block" id="Arduino.ping"><a class="viewcode-back" href="../../vrlatency.html#vrlatency.arduino.Arduino.ping">[docs]</a>    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns True if Arduino is connected and has correct code loaded.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Checks connection.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - bool: True if arduino is connected, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>

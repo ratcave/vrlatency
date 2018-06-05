@@ -43,15 +43,34 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles attributes and methods related to stimulation/recording device</p>
 <dl class="attribute">
-<dt id="vrlatency.arduino.Arduino.channel">
-<code class="descname">channel</code><a class="headerlink" href="#vrlatency.arduino.Arduino.channel" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">- port</code></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="vrlatency.arduino.Arduino.is_connected">
-<code class="descname">is_connected</code><a class="headerlink" href="#vrlatency.arduino.Arduino.is_connected" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em></p>
-</dd></dl>
+<dt>
+<code class="descname">- baudrate</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- packet_fmt</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- packet_size</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- n_points</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- channel</code></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.disconnect">
@@ -62,7 +81,7 @@
 <dl class="staticmethod">
 <dt id="vrlatency.arduino.Arduino.find_all">
 <em class="property">static </em><code class="descname">find_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.find_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.find_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display a list of connected devices to the machine</p>
+<dd><p>Displays the connected arduino devices to the machine</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -74,12 +93,14 @@
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.init_next_trial">
 <code class="descname">init_next_trial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.init_next_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.init_next_trial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sends a message to arduino to signal start of a trial</p>
+</dd></dl>
 
 <dl class="attribute">
-<dt>
-<code class="descname">is_connected</code></dt>
-<dd></dd></dl>
+<dt id="vrlatency.arduino.Arduino.is_connected">
+<code class="descname">is_connected</code><a class="headerlink" href="#vrlatency.arduino.Arduino.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if arduino is connected, and False otherwise.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="vrlatency.arduino.Arduino.options">
@@ -89,18 +110,54 @@
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.ping">
 <code class="descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.ping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns True if Arduino is connected and has correct code loaded.</p>
+<dd><p>Checks connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if arduino is connected, False otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
+<li>bool</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.read">
 <code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.read" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reads data packets sent over serial channel by arduino</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">data recorded by arduino</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
+<li>list</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.arduino.Arduino.write">
 <code class="descname">write</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/arduino.html#Arduino.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.arduino.Arduino.write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Write to arduino over serial channel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>-</em>) – message to be sent to arduino</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -146,55 +203,76 @@
 <dt id="vrlatency.experiment.BaseExperiment">
 <em class="property">class </em><code class="descclassname">vrlatency.experiment.</code><code class="descname">BaseExperiment</code><span class="sig-paren">(</span><em>arduino=None</em>, <em>screen_ind=0</em>, <em>trials=20</em>, <em>stim=None</em>, <em>on_width=0.5</em>, <em>off_width=0.5</em>, <em>bckgrnd_color=(0</em>, <em>0</em>, <em>0)</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#BaseExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.BaseExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyglet.window.Window</span></code></p>
-<p>Experiment object integrates other components and let’s use to run, record and store experiment data</p>
+<p>Experiment abstract base method</p>
+<dl class="attribute">
+<dt>
+<code class="descname">- arduino</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- bckgrnd_color</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- stim</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- data</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- trials</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- current_trial</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- on_width</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">- off_width</code></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="vrlatency.experiment.BaseExperiment.bckgrnd_color">
 <code class="descname">bckgrnd_color</code><a class="headerlink" href="#vrlatency.experiment.BaseExperiment.bckgrnd_color" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Background color getter</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.experiment.BaseExperiment.end">
 <code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#BaseExperiment.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.BaseExperiment.end" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Ends the experiment by closing the app window and disconnecting arduino</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.experiment.BaseExperiment.on_key_press">
 <code class="descname">on_key_press</code><span class="sig-paren">(</span><em>symbol</em>, <em>modifiers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#BaseExperiment.on_key_press"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.BaseExperiment.on_key_press" title="Permalink to this definition">¶</a></dt>
-<dd><p>A key on the keyboard was pressed (and held down).</p>
-<p>In pyglet 1.0 the default handler sets <cite>has_exit</cite> to <code class="docutils literal notranslate"><span class="pre">True</span></code> if
-the <code class="docutils literal notranslate"><span class="pre">ESC</span></code> key is pressed.</p>
-<p>In pyglet 1.1 the default handler dispatches the <code class="xref py py-meth docutils literal notranslate"><span class="pre">on_close()</span></code>
-event if the <code class="docutils literal notranslate"><span class="pre">ESC</span></code> key is pressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><cite>symbol</cite> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">The key symbol pressed.</p>
-</dd>
-<dt><cite>modifiers</cite> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Bitwise combination of the key modifiers active.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Event:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
+<dd><p>Key press event for SPACE key</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.experiment.BaseExperiment.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#BaseExperiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.BaseExperiment.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>runs the experiment in the passed application window</p>
+<dd><p>Runs the experiment</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="vrlatency.experiment.BaseExperiment.run_trial">
 <code class="descname">run_trial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#BaseExperiment.run_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.BaseExperiment.run_trial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A single trial</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -202,11 +280,11 @@ event if the <code class="docutils literal notranslate"><span class="pre">ESC</s
 <dt id="vrlatency.experiment.DisplayExperiment">
 <em class="property">class </em><code class="descclassname">vrlatency.experiment.</code><code class="descname">DisplayExperiment</code><span class="sig-paren">(</span><em>stim</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#DisplayExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.DisplayExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vrlatency.experiment.BaseExperiment" title="vrlatency.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">vrlatency.experiment.BaseExperiment</span></code></a></p>
-<p>Experiment object to measure display latency measurement</p>
+<p>Measures display latency</p>
 <dl class="method">
 <dt id="vrlatency.experiment.DisplayExperiment.run_trial">
 <code class="descname">run_trial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#DisplayExperiment.run_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.DisplayExperiment.run_trial" title="Permalink to this definition">¶</a></dt>
-<dd><p>a single trial</p>
+<dd><p>A single trial</p>
 </dd></dl>
 
 </dd></dl>
@@ -216,16 +294,16 @@ event if the <code class="docutils literal notranslate"><span class="pre">ESC</s
 <em class="property">class </em><code class="descclassname">vrlatency.experiment.</code><code class="descname">TotalExperiment</code><span class="sig-paren">(</span><em>stim</em>, <em>rigid_body</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#TotalExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.TotalExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vrlatency.experiment.BaseExperiment" title="vrlatency.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">vrlatency.experiment.BaseExperiment</span></code></a></p>
 <p>Experiment object for total latency measurement</p>
-<p>NOTE: In this experiment the timing information is recorded by Arduino
-=== start of the trial
+<p class="rubric">Notes</p>
+<p>In this experiment the timing information is recorded by Arduino
+Here is a description of a single trial:
 1. LED lights moves from one set of LEDs to another - timing info recorded
 2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -&gt; timing info recorded
-* the same process is repeated
-=== end of the trial</p>
+* the same process is repeated</p>
 <dl class="method">
 <dt id="vrlatency.experiment.TotalExperiment.run_trial">
 <code class="descname">run_trial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#TotalExperiment.run_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.TotalExperiment.run_trial" title="Permalink to this definition">¶</a></dt>
-<dd><p>single trial</p>
+<dd><p>A single trial</p>
 </dd></dl>
 
 </dd></dl>
@@ -234,17 +312,17 @@ event if the <code class="docutils literal notranslate"><span class="pre">ESC</s
 <dt id="vrlatency.experiment.TrackingExperiment">
 <em class="property">class </em><code class="descclassname">vrlatency.experiment.</code><code class="descname">TrackingExperiment</code><span class="sig-paren">(</span><em>rigid_body</em>, <em>trial_period=0.04</em>, <em>amplify_dist=-10</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#TrackingExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.TrackingExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vrlatency.experiment.BaseExperiment" title="vrlatency.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">vrlatency.experiment.BaseExperiment</span></code></a></p>
-<p>Experiment object for tracking latency measurement</p>
-<p>NOTE: in this experiment the timing information is recorded on Python side:
-=== Start of trial
+<p>Measures tracking latency</p>
+<p class="rubric">Notes</p>
+<p>In this experiment the timing information is recorded on Python side.
+here is a description of a single trial:
 1. Movement is sent to Arduino by python (communication time is insignificant)
 2. LEDs move on the VRLatency shield and at the same time the LED positions are being tracked
-3. Timing between the movement command and changes in position are compared and the tracking delay is characterize
-=== End of trial</p>
+3. Timing between the movement command and changes in position are compared and the tracking delay is characterize</p>
 <dl class="method">
 <dt id="vrlatency.experiment.TrackingExperiment.run_trial">
 <code class="descname">run_trial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vrlatency/experiment.html#TrackingExperiment.run_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vrlatency.experiment.TrackingExperiment.run_trial" title="Permalink to this definition">¶</a></dt>
-<dd><p>a single trial</p>
+<dd><p>A single trial</p>
 </dd></dl>
 
 </dd></dl>
