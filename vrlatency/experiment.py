@@ -7,7 +7,6 @@ import random
 from warnings import warn
 from time import sleep, perf_counter
 from .data import Data
-from itertools import cycle
 
 
 class BaseExperiment(pyglet.window.Window):
@@ -103,8 +102,8 @@ class TrackingExperiment(BaseExperiment):
     === End of trial
     """
 
-    def __init__(self, rigid_body, *args, **kwargs):
-        """ initialize a TrackigExperiment object
+    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
+        """ initialize a Tracking Experiment object
 
         Args:
                 - rigid_body: is the object that has position attributes
@@ -112,21 +111,18 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
 
         self.rigid_body = rigid_body
-        self._pos = cycle(['L', 'R'])
+        self.trial_period = trial_period
+        self.amplify_dist = amplify_dist
 
     def run_trial(self):
         """ a single trial"""
-        next_pos = next(self._pos)
-        self.arduino.write(next_pos) if self.arduino else None
         start_time = perf_counter()
-        while (perf_counter() - start_time) < .04:  # period of one trial
-            t, led_pos = perf_counter(), -10 * self.rigid_body.position.x
+        while (perf_counter() - start_time) < self.trial_period:
+            t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.values.extend([start_time, t, led_pos, self.current_trial, 0 if next_pos == 'L' else 1])
+            self.data.extend([start_time, t, led_pos, self.current_trial])
 
         sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
-
-    #TODO: For the code on Arduino side add the start trial character
 
 
 class TotalExperiment(BaseExperiment):
@@ -148,10 +144,10 @@ class TotalExperiment(BaseExperiment):
     def run_trial(self):
         """single trial"""
         self.stim.position = -self.rigid_body.position.x * .5, 0
-        self.stim.mesh.update()
         self.clear()
         self.stim.draw()
         self.flip()
+        sleep(next(self.on_width))
         self.data.values.extend(self.arduino.read()) if self.arduino else None
 
 

@@ -19,3 +19,6 @@ class Data(object):
 
     def analyze(self):
         raise NotImplementedError
+
+    def extend(self, value):
+        self.values.extend(value)

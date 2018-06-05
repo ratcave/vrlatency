@@ -11,20 +11,33 @@ class Arduino(object):
         is_connected (bool):
 
     """
-    pkt_formats = {'Tracking': '-', 'Display': 'I2H', 'Total': 'I3H?'}
-    pkt_size = {'Tracking': 0, 'Display': 8, 'Total': 11}
-    n_point_options = {'Tracking': 0, 'Display': 100, 'Total': 2000}
+    options = {'Display': dict(packet_fmt='I2H', packet_size=8, n_points=100),
+               'Total': dict(packet_fmt='I3H?', packet_size=11, n_points=500),
+               'Tracking': dict(packet_fmt='-', packet_size=0, n_points=0),
+               }
 
-    def __init__(self, experiment_type, port, baudrate):
-        """Can be 'Tracking', 'Display', or 'Total'"""
+    def __init__(self, port, baudrate, packet_fmt, packet_size, n_points):
+        """
+        Interfaces and Connects to an arduino running the VRLatency programs.
+
+        Arguments:
+            - port (str): The port the arduino is conected on (ex: 'COM8')
+            - baudrate (int): The baud rate for the arduino connection.
+        """
         self.port = port
         self.baudrate = baudrate
+        self.packet_fmt = packet_fmt
+        self.packet_size = packet_size
+        self.n_points = n_points
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
-        self.experiment_type = experiment_type
-        self.packet_fmt = self.pkt_formats[experiment_type]
-        self.packet_size = self.pkt_size[experiment_type]
-        self.n_points = self.n_point_options[experiment_type]
         self.channel.readline()
+
+    @classmethod
+    def from_experiment_type(cls, experiment_type, *args, **kwargs):
+        """Auto-gen Arduino params from experiment_type ('Tracking', 'Display', or 'Total')"""
+        options = cls.options[experiment_type].copy()
+        options.update(kwargs)
+        return cls(*args, **options)
 
     @staticmethod
     def find_all():
@@ -52,11 +65,11 @@ class Arduino(object):
     def init_next_trial(self):
         self.write('S')
 
-    # TODO: Add pinging to Arduino code
+    # TODO: Add pinging to Arduino code (added to total, but not others!)
     def ping(self):
         """Returns True if Arduino is connected and has correct code loaded."""
         self.channel.readline()
-        self.channel.write(bytes('are_you_ready?', 'utf-8'))
-        packet = self.channel.read(30)
-        response = unpack('<3c', packet)
+        self.channel.write(bytes('R', 'utf-8'))
+        packet = self.channel.read(10)
+        response = packet.decode(encoding='utf-8')
         return True if response == 'yes' else False

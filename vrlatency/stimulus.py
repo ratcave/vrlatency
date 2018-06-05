@@ -13,11 +13,13 @@ class Stimulus(object):
         mesh: the object appearing on the screen
 
     """
-    def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0)):
+    def __init__(self, type='Plane', color=(1., 1., 1.), position=(0, 0), size=5):
         self.mesh = rc.WavefrontReader(rc.resources.obj_primitives).get_mesh(type, drawmode=rc.POINTS,
                                                                              position=(position[0], position[1], -3))
+        self.mesh.uniforms['flat_shading'] = True
         self.position = position
         self.color = tuple(color)
+        self.size = size
 
     @property
     def position(self):
@@ -35,6 +37,14 @@ class Stimulus(object):
     def color(self, values):
         r, g, b = values
         self.mesh.uniforms['diffuse'] = r, g, b
+
+    @property
+    def size(self):
+        return self.mesh.point_size
+
+    @size.setter
+    def size(self, value):
+        self.mesh.point_size = int(value)
 
     def draw(self):
         with rc.default_shader:
