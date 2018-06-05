@@ -1,14 +1,11 @@
 ###### Requirements without Version Specifiers ######
 click
-<<<<<<< HEAD
 ratcave
 conf
 sphinx
+sphinxcontrib-napoleon
 mock
 
-=======
->>>>>>> origin/master
-#
 ###### Requirements with Version Specifiers ######
 #
 ###### Refer to other requirements files ######
