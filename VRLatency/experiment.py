@@ -7,7 +7,6 @@ import random
 from warnings import warn
 from time import sleep, perf_counter
 from .data import Data
-from itertools import cycle
 
 
 class BaseExperiment(pyglet.window.Window):

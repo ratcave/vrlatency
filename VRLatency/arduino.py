@@ -52,11 +52,11 @@ class Arduino(object):
     def init_next_trial(self):
         self.write('S')
 
-    # TODO: Add pinging to Arduino code
+    # TODO: Add pinging to Arduino code (added to total, but not others!)
     def ping(self):
         """Returns True if Arduino is connected and has correct code loaded."""
         self.channel.readline()
-        self.channel.write(bytes('are_you_ready?', 'utf-8'))
-        packet = self.channel.read(30)
-        response = unpack('<3c', packet)
+        self.channel.write(bytes('R', 'utf-8'))
+        packet = self.channel.read(10)
+        response = packet.decode(encoding='utf-8')
         return True if response == 'yes' else False
