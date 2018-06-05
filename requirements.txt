@@ -1,10 +1,13 @@
 ###### Requirements without Version Specifiers ######
 click
+<<<<<<< HEAD
 ratcave
 conf
 sphinx
 mock
 
+=======
+>>>>>>> origin/master
 #
 ###### Requirements with Version Specifiers ######
 #
