@@ -3,7 +3,7 @@ click
 pyglet
 numpy
 ratcave
-conf
+# conf
 sphinx
 sphinxcontrib-napoleon
 mock
