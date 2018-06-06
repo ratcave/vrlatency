@@ -11,10 +11,9 @@ setup(
     packages=find_packages(),
 
     # required packages
-    install_requires=['matplotlib', 'click', 'pyglet', 'ratcave', 'pyserial'],
+    install_requires=['numpy', 'matplotlib', 'click', 'pyglet', 'ratcave', 'pyserial'],
 
-    entry_points=
-    '''
+    entry_points='''
         [console_scripts]
         measure_latency = vrlatency.cmd_api:main
     ''',
