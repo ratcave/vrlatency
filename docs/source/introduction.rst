@@ -1,4 +1,0 @@
-Introduction
-============
-
-Helloooo there!

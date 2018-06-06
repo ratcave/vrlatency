@@ -2,6 +2,8 @@ vrlatency.egg-info/
 Measurements/
 build/
 dist/
+docs/build
+docs_guide.txt
 *.pyc
 *.pyd
 *~
