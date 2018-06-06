@@ -1,4 +1,6 @@
 ###### Requirements without Version Specifiers ######
+numpy
+pyserial
 click
 ratcave
 conf
