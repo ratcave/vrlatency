@@ -11,8 +11,7 @@ setup(
     packages=find_packages(),
 
     # required packages
-    setup_requires=['numpy'],
-    install_requires=['matplotlib', 'click', 'pyglet', 'pyserial'],
+    install_requires=['numpy', 'matplotlib', 'click', 'pyglet', 'pyserial'],
 
     entry_points='''
         [console_scripts]
