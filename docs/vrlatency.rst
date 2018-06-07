@@ -1,9 +1,6 @@
 VRLatency package
 =================
 
-Submodules
-----------
-
 vrlatency.arduino module
 ------------------------
 

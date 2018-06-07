@@ -7,7 +7,7 @@ Welcome to VRLatency documentation. This library is built to help the process of
 Indices and tables
 ==================
 .. toctree::
-   :maxdepth: 0
+   :maxdepth: 1
 
    introduction
    vrlatency
