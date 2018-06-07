@@ -12,7 +12,7 @@ setup(
 
     # required packages
     setup_requires=['numpy'],
-    install_requires=['matplotlib', 'click', 'pyglet', 'ratcave', 'pyserial'],
+    install_requires=['matplotlib', 'click', 'pyglet', 'pyserial'],
 
     entry_points='''
         [console_scripts]
