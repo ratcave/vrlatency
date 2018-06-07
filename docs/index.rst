@@ -10,7 +10,7 @@ Indices and tables
    :maxdepth: 2
 
    introduction
-   modules
+   vrlatency
 
 
 

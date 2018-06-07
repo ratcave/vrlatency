@@ -1,4 +1,4 @@
-vrlatency package
+VRLatency package
 =================
 
 Submodules
