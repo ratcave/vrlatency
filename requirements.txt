@@ -2,7 +2,6 @@
 numpy
 click
 pyglet
-ratcave
 # conf
 sphinx
 sphinxcontrib-napoleon
