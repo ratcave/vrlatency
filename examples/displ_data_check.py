@@ -14,11 +14,11 @@ mystim.mesh.scale.xyz = .0225, .2, 1
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
-                              trials=100,
+                              trials=20,
                               fullscreen=True, screen_ind=1,
                               stim=mystim,
-                              on_width=.05,
-                              off_width=[0, .3])
+                              on_width=1.,#.5,
+                              off_width=.5)#[0, .3])
 
 myexp.run()
 
