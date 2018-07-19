@@ -106,8 +106,6 @@ class DisplayExperiment(BaseExperiment):
         self.stim.draw()
         self.flip()
         sleep(next(self.on_width))
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
-        self.arduino.write('S')  # start recording again for no stimulus
         self.clear()
         self.flip()
         sleep(next(self.off_width))
