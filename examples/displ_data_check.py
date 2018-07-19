@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # specify and connect to device
-# myarduino = vrl.Arduino(port='COM9', baudrate=250000, experiment_type='Display')
-
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
@@ -14,11 +12,11 @@ mystim.mesh.scale.xyz = .0225, .2, 1
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
-                              trials=50,
+                              trials=100,
                               fullscreen=True, screen_ind=1,
                               stim=mystim,
-                              on_width=0,
-                              off_width=.02)  #[0, .3])
+                              on_width=.1,
+                              off_width=[.1, .3])
 
 myexp.run()
 
