@@ -2,6 +2,7 @@ import vrlatency as vrl
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # specify and connect to device
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
