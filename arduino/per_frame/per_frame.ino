@@ -1,5 +1,5 @@
-int analogPin_Left = 2;         // Left PhotoDiode connect on anaglog pin2  
-int analogPin_Right = 3;        // Right PhotoDiode connect on anaglog pin3  
+int analogPin_Left = 0;         // Left PhotoDiode connect on anaglog pin2
+int analogPin_Right = 1;        // Right PhotoDiode connect on anaglog pin3
 int win_len = 700;
 
 int data[700] = {0};
