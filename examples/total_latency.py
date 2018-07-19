@@ -2,8 +2,10 @@ import vrlatency as vrl
 import natnetclient as natnet
 import numpy as np
 
-# myarduino = vrl.Arduino.from_experiment_type(port='COM9', baudrate=250000, experiment_type='Total')
+
+# connect to device
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Total', port='COM9', baudrate=250000)
+
 # create a stimulation pattern
 mystim = vrl.Stimulus(position=(0, 0), color=(1, 1, 1), size=5)
 mystim.mesh.scale.xyz = .022, .2, 1
