@@ -11,11 +11,11 @@ class Data(object):
     def __init__(self):
         self.values = []
 
-    def to_csv(self, path):
+    def to_csv(self, filename):
         """ Save data into a csv file"""
-        with open(path, 'w', newline='\n') as file:
-            writer = csv.writer(file)
-            writer.writerows(self.values)
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file, delimiter=' ')
+            writer.writerows(map(str, self.values))
 
     def analyze(self):
         raise NotImplementedError
