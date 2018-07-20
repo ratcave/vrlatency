@@ -10,7 +10,7 @@ screen = display.get_screens()[1]
 mywin = pyglet.window.Window(fullscreen=True, screen=screen)
 
 # initialize a stimulus object
-mypoint = vrl.Stimulus(type='PLANE', position=(mywin.width//2, mywin.height//2), width=50, height=50)
+mypoint = vrl.Stimulus(position=(mywin.width//2, mywin.height//2), size=10)
 
 pos_x = itertools.cycle([mywin.width//2 - 200, mywin.width//2 + 200])
 colors = itertools.cycle([(255, 0, 0), (0, 255, 0)])
