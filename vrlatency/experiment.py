@@ -63,12 +63,15 @@ class BaseExperiment(pyglet.window.Window):
 
     def run(self):
         """Runs the experiment"""
-        for trial in range(1, self.trials + 1):
-            while not self.has_exit:
-                self.dispatch_events()
-                self.current_trial += 1
-                self.arduino.init_next_trial() if self.arduino else None
-                self.run_trial()
+        # for trial in range(1, self.trials + 1):
+
+        while not self.has_exit:
+            self.dispatch_events()
+            self.current_trial += 1
+            self.arduino.init_next_trial() if self.arduino else None
+            self.run_trial()
+            if self.current_trial == self.trials:
+                self.has_exit = True
         self.end()
 
     @abstractmethod
@@ -111,7 +114,6 @@ class DisplayExperiment(BaseExperiment):
         self.flip()
         sleep(next(self.off_width))
         self.data.values.extend(self.arduino.read()) if self.arduino else None
-        print(self.stim.position)
 
 
 class TrackingExperiment(BaseExperiment):
