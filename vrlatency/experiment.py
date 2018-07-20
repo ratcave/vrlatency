@@ -64,11 +64,11 @@ class BaseExperiment(pyglet.window.Window):
     def run(self):
         """Runs the experiment"""
         for trial in range(1, self.trials + 1):
-            while not self.has_exit:
-                self.dispatch_events()
-                self.current_trial += 1
-                self.arduino.init_next_trial() if self.arduino else None
-                self.run_trial()
+            # while not self.has_exit:
+            self.dispatch_events()
+            self.current_trial += 1
+            self.arduino.init_next_trial() if self.arduino else None
+            self.run_trial()
         self.end()
 
     @abstractmethod
@@ -76,10 +76,10 @@ class BaseExperiment(pyglet.window.Window):
         """A single trial"""
         pass
 
-    # def on_key_press(self, symbol, modifiers):
-    #     """ Key press event for SPACE key"""
-    #     if key.ESCAPE == symbol:
-    #         self.end()
+    def on_key_press(self, symbol, modifiers):
+        """ Key press event for SPACE key"""
+        if key.ESCAPE == symbol:
+            self.end()
 
     @property
     def bckgrnd_color(self):
