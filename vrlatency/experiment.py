@@ -64,6 +64,7 @@ class BaseExperiment(pyglet.window.Window):
     def run(self):
         """Runs the experiment"""
         for trial in range(1, self.trials + 1):
+            # while not mywin.has_exit:
             self.dispatch_events()
             self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
