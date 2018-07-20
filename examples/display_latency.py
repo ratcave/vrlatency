@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(980, 510), size=5)
+mystim = vrl.Stimulus(position=(955, 447), size=5)
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
