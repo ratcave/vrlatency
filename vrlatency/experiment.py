@@ -63,11 +63,15 @@ class BaseExperiment(pyglet.window.Window):
 
     def run(self):
         """Runs the experiment"""
-        for trial in range(1, self.trials + 1):
+        # for trial in range(1, self.trials + 1):
+
+        while not self.has_exit:
             self.dispatch_events()
             self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
+            if self.current_trial == self.trials:
+                self.has_exit = True
         self.end()
 
     @abstractmethod
@@ -75,10 +79,10 @@ class BaseExperiment(pyglet.window.Window):
         """A single trial"""
         pass
 
-    def on_key_press(self, symbol, modifiers):
-        """ Key press event for SPACE key"""
-        if key.ESCAPE == symbol:
-            self.end()
+    # def on_key_press(self, symbol, modifiers):
+    #     """ Key press event for SPACE key"""
+    #     if key.ESCAPE == symbol:
+    #         self.end()
 
     @property
     def bckgrnd_color(self):
@@ -123,7 +127,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.08, amplify_dist=-10, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:

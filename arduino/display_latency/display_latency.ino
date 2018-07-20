@@ -6,7 +6,7 @@ int received_data = 0;
 int start_trial = 83;
 int trial = 0;
 int i = 0;
-int pkt_n_point = 100;  // make sure this value is similar to python side
+int pkt_n_point = 500;  // make sure this value is similar to python side
 
 struct Packet {
   unsigned long time_m;
