@@ -157,6 +157,8 @@ class TotalExperiment(BaseExperiment):
         1. LED lights moves from one set of LEDs to another - timing info recorded
         2. LED movement is tracked and a new images is displayed (on top of the corresponding sensor) -> timing info recorded
         * the same process is repeated
+
+        By comparing the timing between the LED_state and the photodiode data the delay can be characterized
     """
 
     def __init__(self, stim, rigid_body, *args, **kwargs):
@@ -173,7 +175,7 @@ class TotalExperiment(BaseExperiment):
 
     def run_trial(self):
         """A single trial"""
-        self.stim.position = -(self.rigid_body.position.x + .566) * 2000, 0
+        self.stim.position = -(self.rigid_body.position.x + .564) * 100, 0
         self.clear()
         self.stim.draw()
         self.flip()

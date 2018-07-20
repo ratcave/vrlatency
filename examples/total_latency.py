@@ -1,6 +1,7 @@
 import vrlatency as vrl
 import natnetclient as natnet
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 # connect to device
@@ -26,3 +27,10 @@ myexp.run()
 
 # get the data
 dd = np.array(myexp.data.values).reshape(-1, 5)
+
+# plot the data
+plt.plot(dd[:, 0]/1000, dd[:, 1])
+plt.plot(dd[:, 0]/1000, dd[:, 2])
+plt.plot(dd[:, 0]/1000, dd[:, 4]*350)
+plt.xlabel('Time (ms)')
+plt.show()
