@@ -24,5 +24,6 @@ myexp.run()
 # get the data
 dd = np.array(myexp.data.values).reshape(-1, 3)
 
-plt.plot(dd[:, 0]/1000000, dd[:, 1])
+plt.plot(dd[:, 0]/1000, dd[:, 1])
+plt.xlabel('Time (ms)')
 plt.show()

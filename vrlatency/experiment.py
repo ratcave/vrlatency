@@ -120,7 +120,7 @@ class TrackingExperiment(BaseExperiment):
         here is a description of a single trial:
         1. Movement is sent to Arduino by python (communication time is insignificant)
         2. LEDs move on the VRLatency shield and at the same time the LED positions are being tracked
-        3. Timing between the movement command and changes in position are compared and the tracking delay is characterize
+        3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
     def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
