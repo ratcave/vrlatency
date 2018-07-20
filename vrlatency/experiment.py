@@ -127,7 +127,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.08, amplify_dist=-10, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:
