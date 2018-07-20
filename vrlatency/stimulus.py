@@ -1,14 +1,9 @@
 import pyglet
-import numpy as np
-# import ratcave as rc
-from time import sleep
-from itertools import cycle
-# import natnetclient as natnet
 
 
 class Stimulus:
 
-    def __init__(self, position=(0, 0), color=(255, 255, 255), size=1):
+    def __init__(self, position=(0, 0), color=(255, 255, 255), size=100):
 
         self.position = position
         self.color = color
