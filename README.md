@@ -1,12 +1,11 @@
-# VRLatency
-A library to measure and analyze the latency of virtual reality system
+# VRLatency: Virtual Reality Latency Measurement 
+Tests go here
+
+# What is it
+VRLatency is a python package that provides an easy way, both in terms of hardware design and software usability, to measure and analyze the latency of any projector-based virtual reality system. In fact, with this package, along the device, one can measure the latency of any display.
 
 ## TODO
-
-- Command-line interface
-- Arduino
-    - Upload arduino code without the need for arduino IDE
-
-- not all VR systems have two screens:
-    - search for number of displys using the pyglet context and if there exist a second one project onto
-    it and if not then stick to the main disply
+- removing ratcave
+- adding the csv storing method
+- analysis methods
+- command-line interface
