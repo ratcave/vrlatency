@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='vrlatency',
     version='0.1',
-    description='A library to measure and analyze the latency of virtual reality system',
+    description='A python package to measure and analyze the latency of projector-based virtual reality systems',
     license="MIT",
     author='Mohammad Bashiri',
     author_email='mohammadbashiri93@gmail.com',
