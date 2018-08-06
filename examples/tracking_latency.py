@@ -2,6 +2,7 @@ import vrlatency as vrl
 import natnetclient as natnet
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 # connect to device
@@ -27,3 +28,12 @@ for x_val in dd[:, 0]:
 
 plt.xlabel('Time (ms)')
 plt.show()
+
+# ge the latency values
+latencies = myexp.data.get_latency(experiment_type='Tracking',
+                                   shape=(-1, 4), effect_index=2, trial_index=3, time_index=0)
+
+# plot the histogram of the latency values
+# sns.distplot(latencies)
+# plt.show()
+
