@@ -127,7 +127,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.08, amplify_dist=-10, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:
@@ -138,18 +138,18 @@ class TrackingExperiment(BaseExperiment):
         """
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
-        self.trial_period = trial_period
+        self.trial_period = _gen_iter(trial_period)
         self.amplify_dist = amplify_dist
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
-        while (perf_counter() - start_time) < self.trial_period:
+        while (perf_counter() - start_time) < next(self.trial_period):
             t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
             sleep(.001)  # to decrease the data point resolution to a millisecond
             self.data.extend([start_time, t, led_pos, self.current_trial])
 
-        sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
+        # sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
 
 
 class TotalExperiment(BaseExperiment):
