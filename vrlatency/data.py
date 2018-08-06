@@ -1,4 +1,6 @@
 import csv
+import numpy as np
+import seaborn as sns
 
 
 class Data(object):
@@ -41,8 +43,43 @@ class Data(object):
     def from_csv(self, path):
         raise NotImplementedError
 
-    def analyze(self):
+    def make_smooth(self):
         raise NotImplementedError
+
+    def __rolling(self):
+        raise NotImplementedError
+
+    def get_hist(self, shape, effect_index, time_index=None, trial_index=None):
+        """ Displays the histogram of the latency measured in each trial
+
+        NOTE:
+            Usually we have the trial number and its timing, which marks the beginning of the trial.
+            We also have the timing information where we are expecting the effect (sensor information).
+            The difference of these two timing information in each trial gives us the delay in each trial.
+            And we can plot the histogram of these delay values in each trial over the period of whole experiment
+        """
+
+        # shape the data in the right way
+        dd = np.array(self.values).reshape(shape)
+
+        # get the time of the start of a trial (a row/column vector)
+        trial_start = np.diff(dd[:, trial_index]) if trial_index else np.diff(dd[:, -1])
+        trial_start = np.insert(trial_start, 0, 0)
+        trial_start_time = dd[trial_start==1, time_index] if time_index else dd[trial_start==1, 0]
+
+        # get the timing of when the effect was sensed (a row/column vector)
+
+        # smoothen the data (a binary signal)
+        dd_smooth = dd[:, effect_index].copy() * 0
+        dd_smooth[dd[:, effect_index] >= dd[:, effect_index].mean()] = 5
+
+        # apply a rolling window (sets the  values to the value of right edge)
+
+
+        effect_start_time =
+
+        # get the timing of the change in signal
+        latencies = effect_start_time - trial_start_time
 
     def extend(self, value):
         self.values.extend(value)
