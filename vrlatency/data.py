@@ -11,8 +11,7 @@ class Data(object):
     def __init__(self):
         self.values = []
 
-
-    def _write_data(self, file_obj, data, fieldnames):
+    def __write_data(self, file_obj, data, fieldnames):
         writer = csv.DictWriter(file_obj, delimiter=',', fieldnames=fieldnames)
         writer.writeheader()
 
@@ -24,8 +23,7 @@ class Data(object):
         for dicts in list_of_dicts:
             writer.writerow(dicts)
 
-
-    def to_csv(self, path, experiment_params=None, data_culomns=None):
+    def to_csv(self, path, experiment_params=None, columns=None):
         """ Save data into a csv file """
 
         # write the experiment parameters (header)
@@ -35,15 +33,13 @@ class Data(object):
             csv_file.writelines("\n")
 
             # reshape the data
-            data = [self.values[i:i+len(data_culomns)] for i in range(0, len(self.values), len(data_culomns))]
+            data = [self.values[i:i+len(columns)] for i in range(0, len(self.values), len(columns))]
 
-            # check if data_culons are empty use integer indecies
-            self._write_data(csv_file, data, data_culomns)
+            # check if columns are empty use integer index
+            self.__write_data(csv_file, data, columns)
 
-
-    def from_csv(path):
+    def from_csv(self, path):
         raise NotImplementedError
-
 
     def analyze(self):
         raise NotImplementedError
