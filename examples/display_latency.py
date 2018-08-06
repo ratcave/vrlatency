@@ -1,6 +1,7 @@
 import vrlatency as vrl
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 # specify and connect to device
@@ -22,6 +23,14 @@ myexp.run()
 # get the data
 dd = np.array(myexp.data.values).reshape(-1, 3)
 
+# plot the data
 plt.plot(dd[:, 0]/1000, dd[:, 1])
 plt.xlabel('Time (ms)')
+plt.show()
+
+# get the latency values
+latencies = myexp.data.get_latency(shape=(-1, 3), effect_index=1, trial_index=2, time_index=0)
+
+# plot the histogram of the latency values
+sns.distplot(latencies)
 plt.show()
