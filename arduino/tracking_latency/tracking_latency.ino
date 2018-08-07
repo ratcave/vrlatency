@@ -27,12 +27,12 @@ void loop() {
     received_data = Serial.read();
     toggle = !toggle;
     if(toggle){
-      digitalWrite(right_LED, LOW);
-      digitalWrite(left_LED, HIGH);
-      }
-    else{
       digitalWrite(right_LED, HIGH);
       digitalWrite(left_LED, LOW);
+      }
+    else{
+      digitalWrite(right_LED, LOW);
+      digitalWrite(left_LED, HIGH);
       }
   }
 }

@@ -15,8 +15,8 @@ myexp = vrl.DisplayExperiment(arduino=myarduino,
                               trials=100,
                               fullscreen=True, screen_ind=1,
                               stim=mystim,
-                              on_width=.1,
-                              off_width=[.1, .3])
+                              on_width=.05,
+                              off_width=[.05, .2])
 
 myexp.run()
 
