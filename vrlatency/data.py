@@ -1,6 +1,5 @@
 import csv
 import numpy as np
-import seaborn as sns
 
 
 class Data(object):
@@ -29,7 +28,7 @@ class Data(object):
         """ Save data into a csv file """
 
         # write the experiment parameters (header)
-        with open(path, "w") as csv_file:
+        with open(path, "w", newline='') as csv_file:
             header = ['{}: {}\n'.format(key, value) for key, value in experiment_params.items()]
             csv_file.writelines(header)
             csv_file.writelines("\n")

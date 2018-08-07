@@ -12,8 +12,8 @@ exp_params = {'Model':'XYZ', 'Name':'Uknown', 'Type':'Some_type', 'Made in':'Ira
 culomn_labels = ['culomn_1', 'culomn_2', 'culomn_3']
 
 # set the path
-# path = "C:/Users/Mohammad Bashiri/Desktop/testing.csv"
-path = "C:/Users/sirotalab/Desktop/testing.csv"
+path = "C:/Users/Mohammad Bashiri/Desktop/testing.csv"
+# path = "C:/Users/sirotalab/Desktop/testing.csv"
 
 # save the data now
-data.to_csv(path, experiment_params=exp_params, data_culomns=culomn_labels)
+data.to_csv(path, experiment_params=exp_params, columns=culomn_labels)
