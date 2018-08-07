@@ -12,6 +12,9 @@ class Data(object):
     def __init__(self):
         self.values = []
 
+    def extend(self, value):
+        self.values.extend(value)
+
     def __write_data(self, file_obj, data, fieldnames):
         writer = csv.DictWriter(file_obj, delimiter=',', fieldnames=fieldnames)
         writer.writeheader()
@@ -39,11 +42,23 @@ class Data(object):
             # check if columns are empty use integer index
             self.__write_data(csv_file, data, columns)
 
-    def from_csv(self, path):
-        raise NotImplementedError
+    @staticmethod
+    def from_csv(path):
+        """reads the data from csv file"""
 
-    def make_smooth(self):
-        raise NotImplementedError
+        # TODO: user should be able to give the column labels as an input
+
+        with open(path, "r") as f:
+            dd = f.readlines()
+
+        dd = dd[dd.index('\n')+1:]
+        dd = [el[:-1] for el in dd]
+        columns = dd[0].split(',')
+        data = [el.split(',') for el in dd[1:]]
+        data = list(zip(*data))
+        data = {cc:list(map(int, dd)) for cc, dd in zip(columns, data)}
+
+        return data
 
     @staticmethod
     def __rolling(data, window_size, set_to='center', stride=1):
@@ -110,6 +125,3 @@ class Data(object):
         latencies = effect_start_time - trial_start_time
 
         return latencies[1:]  # ignore the first value
-
-    def extend(self, value):
-        self.values.extend(value)
