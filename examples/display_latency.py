@@ -8,7 +8,7 @@ import seaborn as sns
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(955, 447), size=500)
+mystim = vrl.Stimulus(position=(500, 200), size=700)
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
@@ -38,3 +38,9 @@ latencies = myexp.data.get_latency(experiment_type='Display',
 # plot the histogram of the latency values
 sns.distplot(latencies)
 plt.show()
+
+# save the data
+exp_params = {'Model':'XYZ', 'Name':'Uknown', 'Type':'Some_type', 'Made in':'Iran'}
+culomn_labels = ['culomn_1', 'culomn_2', 'culomn_3']
+path = "C:/Users/sirotalab/Desktop/Measurement/display_exp_test.csv"
+myexp.data.to_csv(path, experiment_params=exp_params, columns=culomn_labels)

@@ -14,7 +14,7 @@ led = client.rigid_bodies['LED']
 
 myexp = vrl.TrackingExperiment(arduino=myarduino,
                                rigid_body=led,
-                               trials=100, trial_period=[0.05, 1])
+                               trials=200, trial_period=[0.05, 1])
 
 myexp.run()
 
@@ -37,6 +37,11 @@ latencies = myexp.data.get_latency(experiment_type='Tracking',
                                    trial_time_index=0)
 
 # plot the histogram of the latency values
-sns.distplot(latencies)
+sns.distplot(latencies, bins=9)
 plt.show()
 
+# save the data
+exp_params = {'Model': 'XYZ', 'Name': 'Uknown', 'Type': 'Some_type', 'Made in': 'Iran'}
+culomn_labels = ['culomn_1', 'culomn_2', 'culomn_3', 'column_4']
+path = "C:/Users/sirotalab/Desktop/Measurement/tracking_exp_test.csv"
+myexp.data.to_csv(path, experiment_params=exp_params, columns=culomn_labels)

@@ -149,8 +149,6 @@ class TrackingExperiment(BaseExperiment):
             sleep(.001)  # to decrease the data point resolution to a millisecond
             self.data.extend([start_time, t, led_pos, self.current_trial])
 
-        # sleep(random.random() * .1 + .03)  # ITI (Inter-trial Interval) generated randomly
-
 
 class TotalExperiment(BaseExperiment):
     """Experiment object for total latency measurement
