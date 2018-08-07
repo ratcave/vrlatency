@@ -17,6 +17,7 @@ myexp = vrl.TrackingExperiment(arduino=myarduino,
                                trials=200, trial_period=[0.05, 1])
 
 myexp.run()
+# myexp.save(path)
 
 # get the data (start_time, time, led_pos, trial_number)
 dd = np.array(myexp.data.values).reshape(-1, 4)

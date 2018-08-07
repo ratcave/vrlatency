@@ -49,7 +49,7 @@ class BaseExperiment(pyglet.window.Window):
 
         self.bckgrnd_color = bckgrnd_color
         self.stim = stim
-        self.data = Data()
+        self.data = []
 
         self.trials = trials
         self.current_trial = 0
@@ -96,6 +96,31 @@ class BaseExperiment(pyglet.window.Window):
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
 
+    def save(self, path):
+        """ Save data into a csv file """
+
+        # write the experiment parameters (header)
+        with open(path, "w", newline='') as csv_file:
+            header = ['{}: {}\n'.format(key, value) for key, value in experiment_params.items()]
+            csv_file.writelines(header)
+            csv_file.write("\n")
+
+            # reshape the data
+            data = [self.values[i:i+len(columns)] for i in range(0, len(self.values), len(columns))]
+
+            # check if columns are empty use integer index
+            writer = csv.DictWriter(csv_file, delimiter=',', fieldnames=columns)
+            writer.writeheader()
+
+            list_of_dicts = []
+            for values in data:
+                inner_dict = dict(zip(columns, values))
+                list_of_dicts.append(inner_dict)
+
+            for dicts in list_of_dicts:
+                writer.writerow(dicts)
+
+
 class DisplayExperiment(BaseExperiment):
     """Measures display latency"""
 
@@ -113,7 +138,7 @@ class DisplayExperiment(BaseExperiment):
         self.clear()
         self.flip()
         sleep(next(self.off_width))
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
+        self.data.extend(self.arduino.read()) if self.arduino else None
 
 
 class TrackingExperiment(BaseExperiment):
@@ -182,7 +207,7 @@ class TotalExperiment(BaseExperiment):
         self.stim.draw()
         self.flip()
         sleep(next(self.on_width))
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
+        self.data.extend(self.arduino.read()) if self.arduino else None
 
 
 def _gen_iter(vals):
