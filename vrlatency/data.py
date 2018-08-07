@@ -61,7 +61,7 @@ class Data(object):
 
         return data_rolled
 
-    def get_latency(self, shape, effect_index, time_index=None, trial_index=None):
+    def get_latency(self, experiment_type, shape, effect_index, time_index=None, trial_index=None):
         """ Displays the histogram of the latency measured in each trial
 
         NOTE:
@@ -92,7 +92,7 @@ class Data(object):
         dd_smooth = self.__rolling(dd_smooth, window_size=10, set_to='right')
         effect_start = np.diff(dd_smooth)
         effect_start = np.insert(effect_start, 0, 0)
-        effect_start = np.abs(effect_start)  # this should only be used for total and tracking experiments
+        effect_start = effect_start if experiment_type == 'Display' else np.abs(effect_start)
         effect_start_time = dd[effect_start == 1, time_index]
 
         # get the latency values (difference between trial and effect)

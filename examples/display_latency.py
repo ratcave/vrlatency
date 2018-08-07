@@ -24,12 +24,14 @@ myexp.run()
 dd = np.array(myexp.data.values).reshape(-1, 3)
 
 # plot the data
+# NOTE: The time reported by Arduino is in microseconds. and the time reported by Python in seconds
 plt.plot(dd[:, 0]/1000, dd[:, 1])
 plt.xlabel('Time (ms)')
 plt.show()
 
 # get the latency values
-latencies = myexp.data.get_latency(shape=(-1, 3), effect_index=1, trial_index=2, time_index=0)
+latencies = myexp.data.get_latency(experiment_type='Display',
+                                   shape=(-1, 3), effect_index=1, trial_index=2, time_index=0)
 
 # plot the histogram of the latency values
 sns.distplot(latencies)
