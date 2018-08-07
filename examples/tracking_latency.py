@@ -14,7 +14,7 @@ led = client.rigid_bodies['LED']
 
 myexp = vrl.TrackingExperiment(arduino=myarduino,
                                rigid_body=led,
-                               trials=100, trial_period=[0.05, 1])
+                               trials=1000, trial_period=[0.05, 1])
 
 myexp.run()
 
@@ -23,16 +23,20 @@ dd = np.array(myexp.data.values).reshape(-1, 4)
 
 # plot the data
 plt.plot(dd[:, 1]*1000, dd[:, 2])
-for x_val in dd[:, 0]:
+for x_val in np.unique(dd[:, 0]):
     plt.axvline(x=x_val*1000, c='r')
 
 plt.xlabel('Time (ms)')
 plt.show()
 
 # ge the latency values
-latencies = myexp.data.get_latency(shape=(-1, 4), effect_index=2, trial_index=3, time_index=0)
+latencies = myexp.data.get_latency(experiment_type='Tracking',
+                                   shape=(-1, 4),
+                                   effect_index=2, trial_index=3,
+                                   effect_time_index=1,
+                                   trial_time_index=0)
 
 # plot the histogram of the latency values
-# sns.distplot(latencies)
-# plt.show()
+sns.distplot(latencies)
+plt.show()
 
