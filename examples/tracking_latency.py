@@ -22,16 +22,15 @@ myexp.run()
 dd = np.array(myexp.data.values).reshape(-1, 4)
 
 # plot the data
-plt.plot(dd[:, 1]/1000, dd[:, 2])
+plt.plot(dd[:, 1]*1000, dd[:, 2])
 for x_val in dd[:, 0]:
-    plt.axvline(x=x_val/1000, c='r')
+    plt.axvline(x=x_val*1000, c='r')
 
 plt.xlabel('Time (ms)')
 plt.show()
 
 # ge the latency values
-latencies = myexp.data.get_latency(experiment_type='Tracking',
-                                   shape=(-1, 4), effect_index=2, trial_index=3, time_index=0)
+latencies = myexp.data.get_latency(shape=(-1, 4), effect_index=2, trial_index=3, time_index=0)
 
 # plot the histogram of the latency values
 # sns.distplot(latencies)

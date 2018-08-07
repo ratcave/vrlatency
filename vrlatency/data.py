@@ -92,10 +92,14 @@ class Data(object):
         dd_smooth = self.__rolling(dd_smooth, window_size=10, set_to='right')
         effect_start = np.diff(dd_smooth)
         effect_start = np.insert(effect_start, 0, 0)
+        effect_start = np.abs(effect_start)  # this should only be used for total and tracking experiments
         effect_start_time = dd[effect_start == 1, time_index]
 
         # get the latency values (difference between trial and effect)
         latencies = effect_start_time - trial_start_time
+
+        import ipdb
+        ipdb.set_trace()
 
         return latencies[1:]  # ignore the first value
 
