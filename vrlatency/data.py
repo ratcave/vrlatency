@@ -15,30 +15,6 @@ class Data(object):
     def extend(self, value):
         self.values.extend(value)
 
-    def to_csv(self, path, experiment_params=None, columns=None):
-        """ Save data into a csv file """
-
-        # write the experiment parameters (header)
-        with open(path, "w", newline='') as csv_file:
-            header = ['{}: {}\n'.format(key, value) for key, value in experiment_params.items()]
-            csv_file.writelines(header)
-            csv_file.write("\n")
-
-            # reshape the data
-            data = [self.values[i:i+len(columns)] for i in range(0, len(self.values), len(columns))]
-
-            # check if columns are empty use integer index
-            writer = csv.DictWriter(csv_file, delimiter=',', fieldnames=columns)
-            writer.writeheader()
-
-            list_of_dicts = []
-            for values in data:
-                inner_dict = dict(zip(columns, values))
-                list_of_dicts.append(inner_dict)
-
-            for dicts in list_of_dicts:
-                writer.writerow(dicts)
-
     @staticmethod
     def from_csv(path):
         """reads the data from csv file"""

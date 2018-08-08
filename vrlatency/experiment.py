@@ -2,12 +2,12 @@ from __future__ import absolute_import
 
 from abc import abstractmethod
 import pyglet
-from pyglet.window import key
 import random
 from warnings import warn
 from time import sleep, perf_counter
-from .data import Data
-
+from datetime import datetime
+from collections import OrderedDict
+import csv
 
 class BaseExperiment(pyglet.window.Window):
     """Experiment abstract base method
@@ -56,6 +56,12 @@ class BaseExperiment(pyglet.window.Window):
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
+        self.params = OrderedDict()
+        self.params['Experiment'] = self.__class__.__name__
+        self.params['Date'] = datetime.now().strftime('%d.%m.%Y')
+        self.params['Time'] = datetime.now().strftime('%H:%M:%S')
+
+
     def end(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
         self.close()
@@ -96,29 +102,16 @@ class BaseExperiment(pyglet.window.Window):
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
 
+    @abstractmethod
     def save(self, path):
         """ Save data into a csv file """
 
         # write the experiment parameters (header)
         with open(path, "w", newline='') as csv_file:
-            header = ['{}: {}\n'.format(key, value) for key, value in experiment_params.items()]
+            header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]
             csv_file.writelines(header)
             csv_file.write("\n")
 
-            # reshape the data
-            data = [self.values[i:i+len(columns)] for i in range(0, len(self.values), len(columns))]
-
-            # check if columns are empty use integer index
-            writer = csv.DictWriter(csv_file, delimiter=',', fieldnames=columns)
-            writer.writeheader()
-
-            list_of_dicts = []
-            for values in data:
-                inner_dict = dict(zip(columns, values))
-                list_of_dicts.append(inner_dict)
-
-            for dicts in list_of_dicts:
-                writer.writerow(dicts)
 
 
 class DisplayExperiment(BaseExperiment):
@@ -139,6 +132,15 @@ class DisplayExperiment(BaseExperiment):
         self.flip()
         sleep(next(self.off_width))
         self.data.extend(self.arduino.read()) if self.arduino else None
+
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'SensorBrightness', 'Trial']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
 
 
 class TrackingExperiment(BaseExperiment):
