@@ -101,7 +101,6 @@ class BaseExperiment(pyglet.window.Window):
         self._bckgrnd_color = value
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
-
     @abstractmethod
     def save(self, path):
         """ Save data into a csv file """
@@ -111,7 +110,6 @@ class BaseExperiment(pyglet.window.Window):
             header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]
             csv_file.writelines(header)
             csv_file.write("\n")
-
 
 
 class DisplayExperiment(BaseExperiment):

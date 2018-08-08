@@ -9,46 +9,6 @@ class Data(object):
         values: stores the recorded data during the experiment (if record is set to True, and there exist a recording device)
     """
 
-    def __init__(self):
-        self.values = []
-
-    def extend(self, value):
-        self.values.extend(value)
-
-    @staticmethod
-    def from_csv(path):
-        """reads the data from csv file"""
-
-        # TODO: user should be able to give the column labels as an input
-
-        with open(path, "r") as f:
-            dd = f.readlines()
-
-        dd = dd[dd.index('\n')+1:]
-        dd = [el[:-1] for el in dd]
-        columns = dd[0].split(',')
-        data = [el.split(',') for el in dd[1:]]
-        data = list(zip(*data))
-        data = {cc: list(map(int, dd)) for cc, dd in zip(columns, data)}
-
-        return data
-
-    # @staticmethod (Use Pandas)
-    # def __rolling(data, window_size, set_to='center', stride=1):
-    #     """applies a rectangular window on data for the purpose of smoothing"""
-    #     data_rolled = np.zeros(data.shape)
-    #     for i in range(0, data.shape[0] - window_size + 1, stride):
-    #         window_data = data[i:i+window_size]
-    #         if set_to == 'right':
-    #             data_rolled[i+window_size-1] = window_data.max()
-    #         elif set_to == 'left':
-    #             data_rolled[i] = window_data.max()
-    #         else:
-    #             data_rolled[i+window_size//2] = window_data.max()
-    #
-    #     return data_rolled
-
-
 # Put in analysis.py module
 def get_latency(experiment_type, shape, effect_index, trial_index=None, effect_time_index=None, trial_time_index=None):
     """ Displays the histogram of the latency measured in each trial
