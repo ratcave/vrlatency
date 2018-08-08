@@ -17,11 +17,21 @@ def read_csv(path):
     return pd.read_csv(StringIO(body))
 
 
-def get_latency(df):
+def get_display_latencies(df):
     def detect_latency(df, thresh):
         idx = np.where(df.SensorBrightness > thresh)[0][0]
         return df.Time.iloc[idx] - df.Time.iloc[0]
 
     latencies = df.groupby('Trial').apply(detect_latency, thresh=df.SensorBrightness.mean())
     latencies.name = 'DisplayLatency'
+    return latencies
+
+def get_tracking_latencies(df):
+    def detect_latency(df, thresh):
+        diff = np.diff(df.LED_Position > thresh)
+        idx = np.where(diff != 0)[0][0]
+        return df.Time.iloc[idx] - df.Time.iloc[0]
+
+    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.LED_Position.mean())
+    latencies.name = 'TrackingLatency'
     return latencies

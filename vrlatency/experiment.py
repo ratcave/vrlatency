@@ -172,7 +172,16 @@ class TrackingExperiment(BaseExperiment):
         while (perf_counter() - start_time) < next(self.trial_period):
             t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.extend([start_time, t, led_pos, self.current_trial])
+            self.data.extend([t, led_pos, self.current_trial])
+
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'LED_Position', 'Trial']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
 
 
 class TotalExperiment(BaseExperiment):

@@ -27,7 +27,7 @@ myexp.save(path)
 df = read_csv(path)
 print(df.head())
 
-latencies = get_latency(df)
+latencies = get_display_latencies(df)
 
 sns.distplot(latencies.iloc[1:] / 1000.)
 plt.show()
