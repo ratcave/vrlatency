@@ -35,3 +35,16 @@ def get_tracking_latencies(df):
     latencies = df.groupby('Trial').apply(detect_latency, thresh=df.LED_Position.mean())
     latencies.name = 'TrackingLatency'
     return latencies
+
+def get_total_latencies(df):
+    df = df.copy()
+    df['SensorDiff'] = df.LeftSensorbrightness - df.RightSensorbrightness
+
+    def detect_latency(df, thresh):
+        diff = np.diff(df.SensorDiff > thresh)
+        idx = np.where(diff != 0)[0][0]
+        return df.Time.iloc[idx] - df.Time.iloc[0]
+
+    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.SensorDiff.mean())
+    latencies.name = 'TotalLatency'
+    return latencies

@@ -218,6 +218,15 @@ class TotalExperiment(BaseExperiment):
         sleep(next(self.on_width))
         self.data.extend(self.arduino.read()) if self.arduino else None
 
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
+
 
 def _gen_iter(vals):
     """Generator function for on and off width given one or two values"""

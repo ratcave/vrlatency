@@ -1,5 +1,5 @@
 import vrlatency as vrl
-from vrlatency.analysis import read_csv, get_latency
+from vrlatency.analysis import read_csv, get_tracking_latency
 
 import natnetclient as natnet
 import numpy as np
