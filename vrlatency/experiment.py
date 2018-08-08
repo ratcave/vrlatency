@@ -8,6 +8,8 @@ from time import sleep, perf_counter
 from datetime import datetime
 from collections import OrderedDict
 import csv
+from tqdm import tqdm
+
 
 class BaseExperiment(pyglet.window.Window):
     """Experiment abstract base method
@@ -62,33 +64,23 @@ class BaseExperiment(pyglet.window.Window):
         self.params['Time'] = datetime.now().strftime('%H:%M:%S')
 
 
-    def end(self):
+    def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
-        self.close()
         self.arduino.disconnect() if self.arduino else None
 
     def run(self):
         """Runs the experiment"""
-        # for trial in range(1, self.trials + 1):
-
-        while not self.has_exit:
+        for _ in tqdm(range(1, self.trials + 1)):
             self.dispatch_events()
             self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
-            if self.current_trial == self.trials:
-                self.has_exit = True
-        self.end()
+        self.close()
 
     @abstractmethod
     def run_trial(self):
         """A single trial"""
         pass
-
-    # def on_key_press(self, symbol, modifiers):
-    #     """ Key press event for SPACE key"""
-    #     if key.ESCAPE == symbol:
-    #         self.end()
 
     @property
     def bckgrnd_color(self):
@@ -152,7 +144,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.04, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:
@@ -164,15 +156,14 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
         self.trial_period = _gen_iter(trial_period)
-        self.amplify_dist = amplify_dist
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
         while (perf_counter() - start_time) < next(self.trial_period):
-            t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
+            t, led_pos = perf_counter(), self.rigid_body.position.z
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.extend([t, led_pos, self.current_trial])
+            self.data.append([t, led_pos, self.current_trial])
 
     def save(self, path):
         super(self.__class__, self).save(path)

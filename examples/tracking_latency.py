@@ -1,5 +1,5 @@
 import vrlatency as vrl
-from vrlatency.analysis import read_csv, get_tracking_latency
+from vrlatency.analysis import read_csv, get_tracking_latencies
 
 import natnetclient as natnet
 import numpy as np
@@ -17,17 +17,24 @@ led = client.rigid_bodies['LED']
 
 myexp = vrl.TrackingExperiment(arduino=myarduino,
                                rigid_body=led,
-                               trials=200, trial_period=[0.05, 1])
+                               trials=3000, trial_period=.045)
 
+print('Starting Experiment...')
 myexp.run()
+print('Saving Data...')
 myexp.save(path)
 
+
+print('Reading File...')
 df = read_csv(path)
 print(df.head())
+print(len(df))
 
+print('Calculating Latencies...')
 latencies = get_tracking_latencies(df)
 
-sns.distplot(latencies, bins=9)
+print('Making Plot.')
+sns.distplot(latencies.iloc[:-1] * 1000., bins=360)
 plt.show()
 
 # plot the data

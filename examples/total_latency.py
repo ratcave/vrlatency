@@ -38,12 +38,12 @@ latencies = get_total_latencies(df)
 sns.distplot(latencies)
 plt.show()
 
-# get the data
-dd = np.array(myexp.data.values).reshape(-1, 5)
-
-# plot the data
-plt.plot(dd[:, 0]/1000, dd[:, 1])
-plt.plot(dd[:, 0]/1000, dd[:, 2])
-plt.plot(dd[:, 0]/1000, dd[:, 4]*350)
-plt.xlabel('Time (ms)')
-plt.show()
+# # get the data
+# dd = np.array(myexp.data.values).reshape(-1, 5)
+#
+# # plot the data
+# plt.plot(dd[:, 0]/1000, dd[:, 1])
+# plt.plot(dd[:, 0]/1000, dd[:, 2])
+# plt.plot(dd[:, 0]/1000, dd[:, 4]*350)
+# plt.xlabel('Time (ms)')
+# plt.show()
