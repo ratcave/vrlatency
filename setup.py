@@ -7,7 +7,7 @@ setup(
     license="MIT",
     author='Mohammad Bashiri',
     author_email='mohammadbashiri93@gmail.com',
-    url='https://github.com/mohammadbashiri93/VRLatency',
+    url='https://github.com/mohammadbashiri/vrlatency',
     packages=find_packages(),
 
     # required packages
