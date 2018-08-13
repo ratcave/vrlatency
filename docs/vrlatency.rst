@@ -17,14 +17,6 @@ vrlatency.cmd\_api module
     :undoc-members:
     :show-inheritance:
 
-vrlatency.data module
----------------------
-
-.. automodule:: vrlatency.data
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 vrlatency.experiment module
 ---------------------------
 
