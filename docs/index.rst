@@ -14,12 +14,4 @@ Indices and tables
    system_requirements
    tutorials
    vrlatency
-
-
-
-
-Indices and tables
-==================
-
 * :ref:`genindex`
-* :ref:`modindex`
