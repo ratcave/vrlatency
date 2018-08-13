@@ -2,11 +2,13 @@ from __future__ import absolute_import
 
 from abc import abstractmethod
 import pyglet
-from pyglet.window import key
 import random
 from warnings import warn
 from time import sleep, perf_counter
-from .data import Data
+from datetime import datetime
+from collections import OrderedDict
+import csv
+from tqdm import tqdm
 
 
 class BaseExperiment(pyglet.window.Window):
@@ -45,44 +47,39 @@ class BaseExperiment(pyglet.window.Window):
 
         self.arduino = arduino
         if not arduino:
-            warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
+            warn('Arduino not set for experiment.  Data will not be sent or received.')
 
         self.bckgrnd_color = bckgrnd_color
         self.stim = stim
-        self.data = Data()
+        self.data = []
 
         self.trials = trials
         self.current_trial = 0
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(off_width)
 
-    def end(self):
+        self.params = OrderedDict()
+        self.params['Experiment'] = self.__class__.__name__
+        self.params['Date'] = datetime.now().strftime('%d.%m.%Y')
+        self.params['Time'] = datetime.now().strftime('%H:%M:%S')
+
+    def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
-        self.close()
         self.arduino.disconnect() if self.arduino else None
 
     def run(self):
         """Runs the experiment"""
-        # for trial in range(1, self.trials + 1):
-
-        while not self.has_exit:
+        for _ in tqdm(range(1, self.trials + 1)):
             self.dispatch_events()
             self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
-            if self.current_trial == self.trials:
-                self.has_exit = True
-        self.end()
+        self.close()
 
     @abstractmethod
     def run_trial(self):
         """A single trial"""
         pass
-
-    # def on_key_press(self, symbol, modifiers):
-    #     """ Key press event for SPACE key"""
-    #     if key.ESCAPE == symbol:
-    #         self.end()
 
     @property
     def bckgrnd_color(self):
@@ -94,6 +91,16 @@ class BaseExperiment(pyglet.window.Window):
         """Background color setter"""
         self._bckgrnd_color = value
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
+
+    @abstractmethod
+    def save(self, path):
+        """ Save data into a csv file """
+
+        # write the experiment parameters (header)
+        with open(path, "w", newline='') as csv_file:
+            header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]
+            csv_file.writelines(header)
+            csv_file.write("\n")
 
 
 class DisplayExperiment(BaseExperiment):
@@ -113,7 +120,16 @@ class DisplayExperiment(BaseExperiment):
         self.clear()
         self.flip()
         sleep(next(self.off_width))
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
+        self.data.extend(self.arduino.read()) if self.arduino else None
+
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'SensorBrightness', 'Trial']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
 
 
 class TrackingExperiment(BaseExperiment):
@@ -127,7 +143,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.04, amplify_dist=-10, *args, **kwargs):
+    def __init__(self, rigid_body, trial_period=.04, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:
@@ -139,15 +155,23 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
         self.trial_period = _gen_iter(trial_period)
-        self.amplify_dist = amplify_dist
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
         while (perf_counter() - start_time) < next(self.trial_period):
-            t, led_pos = perf_counter(), self.amplify_dist * self.rigid_body.position.x
+            t, led_pos = perf_counter(), self.rigid_body.position.z
             sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.extend([start_time, t, led_pos, self.current_trial])
+            self.data.append([t, led_pos, self.current_trial])
+
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'LED_Position', 'Trial']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
 
 
 class TotalExperiment(BaseExperiment):
@@ -182,7 +206,16 @@ class TotalExperiment(BaseExperiment):
         self.stim.draw()
         self.flip()
         sleep(next(self.on_width))
-        self.data.values.extend(self.arduino.read()) if self.arduino else None
+        self.data.extend(self.arduino.read()) if self.arduino else None
+
+    def save(self, path):
+        super(self.__class__, self).save(path)
+
+        columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
+        with open(path, "a", newline='') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(columns)
+            writer.writerows(self.data)
 
 
 def _gen_iter(vals):

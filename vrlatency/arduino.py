@@ -65,7 +65,7 @@ class Arduino(object):
         Returns:
             - list: data recorded by arduino
         """
-        return unpack('<' + self.packet_fmt * self.n_points, self.channel.read(self.packet_size * self.n_points))
+        return [unpack('<' + self.packet_fmt, self.channel.read(self.packet_size)) for _ in range(self.n_points)]
 
     def write(self, msg):
         """Write to arduino over serial channel

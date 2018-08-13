@@ -28,7 +28,7 @@ void loop() {
     Serial.read();
     trial++;
     for (i=0; i < pkt_n_point; i++){
-      Packet data = {micros(), analogRead(analogPin_Left), trial}; //analogRead(analogPin_Left)/50
+      Packet data = {micros(), analogRead(analogPin_Left), trial};
       Serial.write((byte*)&data, 8);
     }
   }
