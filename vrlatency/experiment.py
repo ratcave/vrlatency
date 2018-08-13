@@ -47,7 +47,7 @@ class BaseExperiment(pyglet.window.Window):
 
         self.arduino = arduino
         if not arduino:
-            warn('Arduino not set for experiment.  Data will not be sent or received. To use, set the "device" in BaseExperiment')
+            warn('Arduino not set for experiment.  Data will not be sent or received.')
 
         self.bckgrnd_color = bckgrnd_color
         self.stim = stim
@@ -62,7 +62,6 @@ class BaseExperiment(pyglet.window.Window):
         self.params['Experiment'] = self.__class__.__name__
         self.params['Date'] = datetime.now().strftime('%d.%m.%Y')
         self.params['Time'] = datetime.now().strftime('%H:%M:%S')
-
 
     def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
