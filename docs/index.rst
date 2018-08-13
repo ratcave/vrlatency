@@ -10,7 +10,9 @@ Indices and tables
    :maxdepth: 1
 
    introduction
+   installation
    vrlatency
+
 
 
 
