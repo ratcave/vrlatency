@@ -14,4 +14,4 @@ Indices and tables
    system_requirements
    tutorials
    vrlatency
-   :ref:`genindex`
+* :ref:`genindex`
