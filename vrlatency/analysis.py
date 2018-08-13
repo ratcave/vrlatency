@@ -26,6 +26,7 @@ def get_display_latencies(df):
     latencies.name = 'DisplayLatency'
     return latencies
 
+
 def get_tracking_latencies(df):
     def detect_latency(df, thresh):
         diff = np.diff(df.LED_Position > thresh)
@@ -35,6 +36,7 @@ def get_tracking_latencies(df):
     latencies = df.groupby('Trial').apply(detect_latency, thresh=df.LED_Position.mean())
     latencies.name = 'TrackingLatency'
     return latencies
+
 
 def get_total_latencies(df):
     df = df.copy()
