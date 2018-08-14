@@ -149,7 +149,7 @@ Here is the summary of the code snippets discussed above:
 
     myexp.run()
 
-    path = "C:/Users/sirotalab/Desktop/Measurement/display_exp_test.csv"
+    path = "C:/Users/UserName/Desktop/tutorial1_display_experiment.csv"
     myexp.save(path)
 
     df = read_csv(path)
