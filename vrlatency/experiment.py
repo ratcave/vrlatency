@@ -157,7 +157,8 @@ class TrackingExperiment(BaseExperiment):
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
-        while (perf_counter() - start_time) < next(self.trial_period):
+        next_trial_period = next(self.trial_period)
+        while (perf_counter() - start_time) < next_trial_period:
             t, led_pos = perf_counter(), self.rigid_body.position.z
             sleep(.001)  # to decrease the data point resolution to a millisecond
             self.data.append([t, led_pos, self.current_trial])
