@@ -1,5 +1,5 @@
 Tutorial 6: Custom Experiment
-===============================
+=============================
 
 So far we covered all the default experiment types (i.e., Display, Tracking, and Total) available
 in VRLatency. But, what if we
