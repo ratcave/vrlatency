@@ -10,4 +10,4 @@ Here are some examples to help getting started with VRLatency.
    tutorial2
    tutorial3
    tutorial4
-   tutorial5
+   tutorial6
