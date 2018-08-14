@@ -158,3 +158,4 @@ Here is the summary of the code snippets discussed above:
 
     sns.distplot(latencies.iloc[1:] / 1000.)
     plt.show()
+
