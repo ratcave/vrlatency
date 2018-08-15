@@ -79,6 +79,9 @@ display latencies, so we create a DisplayExperiment.
 
 While the experiment is running, you keeps you informed about the progress of the experiment.
 
+.. image:: _static/progress_bar_display.png
+    :align: center
+
 Save the data
 +++++++++++++
 
