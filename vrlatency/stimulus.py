@@ -1,5 +1,7 @@
 import pyglet
 
+display = pyglet.window.get_platform().get_display(':0.1')
+print(display.get_screens())
 
 class Stimulus:
 
