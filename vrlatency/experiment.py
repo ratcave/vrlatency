@@ -52,6 +52,7 @@ class BaseExperiment(pyglet.window.Window):
         self.bckgrnd_color = bckgrnd_color
         self.stim = stim
         self.data = []
+        self.data_columns = []
 
         self.trials = trials
         self.current_trial = 0
@@ -102,6 +103,10 @@ class BaseExperiment(pyglet.window.Window):
             csv_file.writelines(header)
             csv_file.write("\n")
 
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(self.data_columns)
+            writer.writerows(self.data)
+
 
 class DisplayExperiment(BaseExperiment):
     """Measures display latency"""
@@ -110,6 +115,7 @@ class DisplayExperiment(BaseExperiment):
         """ 
         """
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
+        self.data_columns = ['Time', 'SensorBrightness', 'Trial']
 
     def run_trial(self):
         """A single trial"""
@@ -121,15 +127,6 @@ class DisplayExperiment(BaseExperiment):
         self.flip()
         sleep(next(self.off_width))
         self.data.extend(self.arduino.read()) if self.arduino else None
-
-    def save(self, path):
-        super(self.__class__, self).save(path)
-
-        columns = ['Time', 'SensorBrightness', 'Trial']
-        with open(path, "a", newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(columns)
-            writer.writerows(self.data)
 
 
 class TrackingExperiment(BaseExperiment):
@@ -155,23 +152,16 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
         self.trial_period = _gen_iter(trial_period)
+        self.data_columns = ['Time', 'LED_Position', 'Trial']
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
-        while (perf_counter() - start_time) < next(self.trial_period):
+        next_trial_period = next(self.trial_period)
+        while (perf_counter() - start_time) < next_trial_period:
             t, led_pos = perf_counter(), self.rigid_body.position.z
             sleep(.001)  # to decrease the data point resolution to a millisecond
             self.data.append([t, led_pos, self.current_trial])
-
-    def save(self, path):
-        super(self.__class__, self).save(path)
-
-        columns = ['Time', 'LED_Position', 'Trial']
-        with open(path, "a", newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(columns)
-            writer.writerows(self.data)
 
 
 class TotalExperiment(BaseExperiment):
@@ -198,9 +188,10 @@ class TotalExperiment(BaseExperiment):
 
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
         self.rigid_body = rigid_body
+        self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
 
     def run_trial(self):
-        """A single trial"""
+        """ A single trial"""
         self.stim.position = -(self.rigid_body.position.x + .564) * 100, 0
         self.clear()
         self.stim.draw()
@@ -208,18 +199,9 @@ class TotalExperiment(BaseExperiment):
         sleep(next(self.on_width))
         self.data.extend(self.arduino.read()) if self.arduino else None
 
-    def save(self, path):
-        super(self.__class__, self).save(path)
-
-        columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
-        with open(path, "a", newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(columns)
-            writer.writerows(self.data)
-
 
 def _gen_iter(vals):
-    """Generator function for on and off width given one or two values"""
+    """ Generator function for on and off width given one or two values"""
     while True:
         if not hasattr(vals, '__iter__'):
             yield vals

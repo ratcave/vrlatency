@@ -1,8 +1,6 @@
 import vrlatency as vrl
 from vrlatency.analysis import read_csv, get_total_latencies
-
 import natnetclient as natnet
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -12,9 +10,8 @@ path = "C:/Users/sirotalab/Desktop/Measurement/total_exp_test.csv"
 # connect to device
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Total', port='COM9', baudrate=250000)
 
-# create a stimulation pattern
-mystim = vrl.Stimulus(position=(0, 0), color=(1, 1, 1), size=5)
-mystim.mesh.scale.xyz = .022, .2, 1
+# create a stimulus
+mystim = vrl.Stimulus(position=(800, 400), size=700)
 
 # specify the object that is being tracked
 client = natnet.NatClient()
