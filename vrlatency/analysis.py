@@ -18,6 +18,7 @@ def read_csv(path):
 
 
 def get_display_latencies(df):
+    """ Returns the latency values for each trial of a Display Experiment"""
     def detect_latency(df, thresh):
         idx = np.where(df.SensorBrightness > thresh)[0][0]
         return df.Time.iloc[idx] - df.Time.iloc[0]
@@ -28,6 +29,7 @@ def get_display_latencies(df):
 
 
 def get_tracking_latencies(df):
+    """ Returns the latency values for each trial of a Tracking Experiment"""
     def detect_latency(df, thresh):
         diff = np.diff(df.LED_Position > thresh)
         idx = np.where(diff != 0)[0][0]
@@ -39,6 +41,7 @@ def get_tracking_latencies(df):
 
 
 def get_total_latencies(df):
+    """ Returns the latency values for each trial of a Total Experiment"""
     df = df.copy()
     df['SensorDiff'] = df.LeftSensorbrightness - df.RightSensorbrightness
 

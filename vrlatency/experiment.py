@@ -94,7 +94,7 @@ class BaseExperiment(pyglet.window.Window):
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
     @abstractmethod
-    def save(self, path, columns):
+    def save(self, path):
         """ Save data into a csv file """
 
         # write the experiment parameters (header)
@@ -104,7 +104,7 @@ class BaseExperiment(pyglet.window.Window):
             csv_file.write("\n")
 
             writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(columns)
+            writer.writerow(self.data_columns)
             writer.writerows(self.data)
 
 
@@ -191,7 +191,7 @@ class TotalExperiment(BaseExperiment):
         self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
 
     def run_trial(self):
-        """A single trial"""
+        """ A single trial"""
         self.stim.position = -(self.rigid_body.position.x + .564) * 100, 0
         self.clear()
         self.stim.draw()
@@ -201,7 +201,7 @@ class TotalExperiment(BaseExperiment):
 
 
 def _gen_iter(vals):
-    """Generator function for on and off width given one or two values"""
+    """ Generator function for on and off width given one or two values"""
     while True:
         if not hasattr(vals, '__iter__'):
             yield vals
