@@ -1,7 +1,5 @@
 import vrlatency as vrl
 from vrlatency.analysis import read_csv, get_display_latencies
-
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 

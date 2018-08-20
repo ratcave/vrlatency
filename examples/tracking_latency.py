@@ -1,8 +1,6 @@
 import vrlatency as vrl
 from vrlatency.analysis import read_csv, get_tracking_latencies
-
 import natnetclient as natnet
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
