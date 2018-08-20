@@ -17,21 +17,13 @@ myexp = vrl.TrackingExperiment(arduino=myarduino,
                                rigid_body=led,
                                trials=100, trial_period=.1)
 
-print('Starting Experiment...')
 myexp.run()
-print('Saving Data...')
 myexp.save(path)
 
-
-print('Reading File...')
 df = read_csv(path)
-print(df.head())
-print(len(df))
 
-print('Calculating Latencies...')
 latencies = get_tracking_latencies(df)
 
-print('Making Plot.')
 sns.distplot(latencies.iloc[:-1] * 1000., bins=360)
 plt.show()
 
