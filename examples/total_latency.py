@@ -11,7 +11,7 @@ path = "C:/Users/sirotalab/Desktop/Measurement/total_exp_test.csv"
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Total', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(800, 400), size=700)
+mystim = vrl.Stimulus(position=(800, 400), size=10)
 
 # specify the object that is being tracked
 client = natnet.NatClient()

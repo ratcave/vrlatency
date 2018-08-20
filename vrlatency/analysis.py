@@ -43,7 +43,10 @@ def get_tracking_latencies(df):
 def get_total_latencies(df):
     """ Returns the latency values for each trial of a Total Experiment"""
     df = df.copy()
-    df['SensorDiff'] = df.LeftSensorbrightness - df.RightSensorbrightness
+    df['SensorDiff'] = df.LeftSensorBrightness - df.RightSensorBrightness
+
+    import ipdb
+    ipdb.set_trace()
 
     def detect_latency(df, thresh):
         diff = np.diff(df.SensorDiff > thresh)
