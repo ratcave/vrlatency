@@ -5,9 +5,7 @@ Tests go here
 VRLatency is a python package that provides an easy way, both in terms of hardware design and software usability, to measure and analyze the latency of any projector-based virtual reality system. In fact, with this package, along the device, one can measure the latency of any display.
 
 ## TODO
+- Check get_total_latency methods
+- Command-line interface
+- Fix the tracking experiment
 - Change the stimulus positioning to be normalized to screen dimensions
-- Analysis methods
-    - Display - done
-    - Tracking - done
-    - Total
-- command-line interface
