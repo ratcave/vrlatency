@@ -10,8 +10,4 @@ VRLatency is a python package that provides an easy way, both in terms of hardwa
     - Display - done
     - Tracking - done
     - Total
-- Save Method
-    - Display
-    - Tracking
-    - Total
 - command-line interface
