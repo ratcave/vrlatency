@@ -32,6 +32,7 @@ df = read_csv(path)
 print(df.head())
 
 latencies = get_total_latencies(df)
+
 sns.distplot(latencies)
 plt.show()
 

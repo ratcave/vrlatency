@@ -21,6 +21,7 @@ myexp.run()
 myexp.save(path)
 
 df = read_csv(path)
+print(df.head())
 
 latencies = get_tracking_latencies(df)
 
