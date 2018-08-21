@@ -6,6 +6,6 @@ VRLatency is a python package that provides an easy way, both in terms of hardwa
 
 ## TODO
 - Check get_total_latency methods
-- Change the stimulus positioning to be normalized to screen dimensions
+- Change the stimulus positioning to be normalized to screen dimensions - DONE
 - Fix the tracking experiment
 - Command-line interface
