@@ -1,7 +1,5 @@
 import vrlatency as vrl
 from vrlatency.analysis import read_csv, get_display_latencies
-
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -11,12 +9,12 @@ path = "C:/Users/sirotalab/Desktop/Measurement/display_exp_test.csv"
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(800, 400), size=700)
+mystim = vrl.Stimulus(position=(1, .5), size=300)
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
                               trials=100,
-                              fullscreen=True, screen_ind=1,
+                              fullscreen=True, screen_ind=0,
                               stim=mystim,
                               on_width=.05,
                               off_width=[.05, .2])
