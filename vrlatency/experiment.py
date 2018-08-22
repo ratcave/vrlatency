@@ -51,7 +51,8 @@ class BaseExperiment(pyglet.window.Window):
 
         self.bckgrnd_color = bckgrnd_color
         self.stim = stim
-        self.stim.screen = screen
+        if self.stim:
+            self.stim.screen = screen
         self.data = []
         self.data_columns = []
 
