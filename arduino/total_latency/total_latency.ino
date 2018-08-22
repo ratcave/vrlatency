@@ -6,7 +6,7 @@ int analogPin_Right = 1;        // Right PhotoDiode connect on anaglog pin3
 bool led_state = 0;
 int trial = 0;
 int i = 0;
-int pkt_n_point = 500;  // make sure this value is similar to python side
+int pkt_n_point = 80;  // make sure this value is similar to python side
 
 int received_data = 0;
 int ping = 0;
@@ -30,8 +30,8 @@ void setup() {
   // set the LEDs high or low
   digitalWrite(9, HIGH);
   digitalWrite(11, HIGH);
-  digitalWrite(right_LED, HIGH);
-  digitalWrite(left_LED, LOW);
+  digitalWrite(right_LED, LOW);
+  digitalWrite(left_LED, HIGH);
 
   // start seria comm
   Serial.begin(250000);       //  setup serial
@@ -59,7 +59,7 @@ void loop() {
       
       for (i=0; i<pkt_n_point; i++){
         Packet data = {micros(), analogRead(analogPin_Left), analogRead(analogPin_Right), trial, led_state};
-        Serial.write((byte*)&data, 11);
+        Serial.write((byte*)&data, 11); // 4 + 2 + 2 + 2 + 1
         }
       }
     else if (received_data == 82){

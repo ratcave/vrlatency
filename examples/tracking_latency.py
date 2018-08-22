@@ -15,7 +15,7 @@ led = client.rigid_bodies['LED']
 
 myexp = vrl.TrackingExperiment(arduino=myarduino,
                                rigid_body=led,
-                               trials=100, trial_period=.1)
+                               trials=500, trial_period=[.02, .05])
 
 myexp.run()
 myexp.save(path)
@@ -25,7 +25,7 @@ print(df.head())
 
 latencies = get_tracking_latencies(df)
 
-sns.distplot(latencies.iloc[:-1] * 1000., bins=360)
+sns.distplot(latencies.iloc[:-1] * 1000., bins=1000)
 plt.show()
 
 # plot the data

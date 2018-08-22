@@ -6,7 +6,7 @@ int received_data = 0;
 int start_trial = 83;
 int trial = 0;
 int i = 0;
-int pkt_n_point = 500;  // make sure this value is similar to python side
+int pkt_n_point = 80;  // make sure this value is similar to python side
 
 struct Packet {
   unsigned long time_m;
@@ -29,7 +29,7 @@ void loop() {
     trial++;
     for (i=0; i < pkt_n_point; i++){
       Packet data = {micros(), analogRead(analogPin_Left), trial};
-      Serial.write((byte*)&data, 8);
+      Serial.write((byte*)&data, 8); // 4 + 2 + 2
     }
   }
 }

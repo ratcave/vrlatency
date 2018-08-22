@@ -9,15 +9,15 @@ path = "C:/Users/sirotalab/Desktop/Measurement/display_exp_test.csv"
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(1, .5), size=300)
+mystim = vrl.Stimulus(position=(0, 0), size=300)
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
                               trials=100,
-                              fullscreen=True, screen_ind=0,
+                              fullscreen=True, screen_ind=1,
                               stim=mystim,
-                              on_width=.05,
-                              off_width=[.05, .2])
+                              on_width=.03,
+                              off_width=[.03, .06])
 
 myexp.run()
 myexp.save(path)

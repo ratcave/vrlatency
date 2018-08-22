@@ -11,7 +11,7 @@ path = "C:/Users/sirotalab/Desktop/Measurement/total_exp_test.csv"
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Total', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(0, 0), size=40)
+mystim = vrl.Stimulus(position=(0, 0), size=10)
 
 # specify the object that is being tracked
 client = natnet.NatClient()
@@ -20,9 +20,9 @@ led = client.rigid_bodies['LED']
 # create an experiment app
 myexp = vrl.TotalExperiment(arduino=myarduino,
                             stim=mystim,
-                            on_width=[.1, .3],
+                            on_width=[.05, .07],
                             rigid_body=led,
-                            trials=100,
+                            trials=200,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()
@@ -33,7 +33,7 @@ print(df.head())
 
 latencies = get_total_latencies(df)
 
-sns.distplot(latencies)
+sns.distplot(latencies, bins=100)
 plt.show()
 
 # # get the data
