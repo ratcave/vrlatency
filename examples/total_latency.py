@@ -20,16 +20,13 @@ led = client.rigid_bodies['LED']
 # create an experiment app
 myexp = vrl.TotalExperiment(arduino=myarduino,
                             stim=mystim,
-                            on_width=.05,
+                            on_width=.03,
                             rigid_body=led,
-                            trials=100,
+                            trials=50,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()
 myexp.save(path)
-
-import numpy as np
-dd = np.array(myexp.data)
 
 df = read_csv(path)
 print(df.head())

@@ -30,8 +30,8 @@ void setup() {
   // set the LEDs high or low
   digitalWrite(9, HIGH);
   digitalWrite(11, HIGH);
-  digitalWrite(right_LED, HIGH);
-  digitalWrite(left_LED, LOW);
+  digitalWrite(right_LED, LOW);
+  digitalWrite(left_LED, HIGH);
 
   // start seria comm
   Serial.begin(250000);       //  setup serial

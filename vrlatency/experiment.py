@@ -195,8 +195,6 @@ class TotalExperiment(BaseExperiment):
     def run_trial(self):
         """ A single trial"""
         self.stim.position = (self.rigid_body.position.z - 1.035) * 2, 0
-        # print(self.rigid_body.position.z)
-        # self.stim.position = 0, 0
         self.clear()
         self.stim.draw()
         self.flip()
