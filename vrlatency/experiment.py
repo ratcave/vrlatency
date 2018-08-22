@@ -70,14 +70,18 @@ class BaseExperiment(pyglet.window.Window):
         """Ends the experiment by closing the app window and disconnecting arduino"""
         self.arduino.disconnect() if self.arduino else None
 
-    def run(self):
+    def run(self, remove_first_trial=True):
         """Runs the experiment"""
-        for _ in tqdm(range(1, self.trials + 1)):
+        for self.current_trial in tqdm(range(1, self.trials + 2)):
             self.dispatch_events()
-            self.current_trial += 1
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
+
+            if self.current_trial == 1 and remove_first_trial:
+                self.data = []
+
         self.close()
+
 
     @abstractmethod
     def run_trial(self):

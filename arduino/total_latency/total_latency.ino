@@ -6,7 +6,7 @@ int analogPin_Right = 1;        // Right PhotoDiode connect on anaglog pin3
 bool led_state = 0;
 int trial = 0;
 int i = 0;
-int pkt_n_point = 200;  // make sure this value is similar to python side
+int pkt_n_point = 80;  // make sure this value is similar to python side
 
 int received_data = 0;
 int ping = 0;
