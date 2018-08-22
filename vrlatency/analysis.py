@@ -42,17 +42,18 @@ def get_tracking_latencies(df):
 
 def get_total_latencies(df):
     """ Returns the latency values for each trial of a Total Experiment"""
-    df = df.copy()
-    df['SensorDiff'] = df.LeftSensorBrightness - df.RightSensorBrightness
 
-    import ipdb
-    ipdb.set_trace()
-
-    def detect_latency(df, thresh):
-        diff = np.diff(df.SensorDiff > thresh)
+    def detect_latency(df, values, thresh):
+        diff = np.diff(values > thresh)
         idx = np.where(diff != 0)[0][0]
         return df.Time.iloc[idx] - df.Time.iloc[0]
 
-    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.SensorDiff.mean())
-    latencies.name = 'TotalLatency'
+    sensor = ['RightSensorBrightness', 'LeftSensorBrightness']
+    for i in range(len(df.groupby('LED_State'))):
+        group = df.groupby('LED_State').get_group(i)
+        latencies = group.groupby('Trial').apply(detect_latency, values=group[sensor[i]], thresh=group[sensor[i]].mean())
+        print(latencies)
+
     return latencies
+
+
