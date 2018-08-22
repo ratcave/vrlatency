@@ -23,7 +23,7 @@ measuring the latency for the following parts of the VR system:
     - Tracking
     - Total
 
-In the following sections, I am going to describe these three different latencies in greater detail.
+In the following sections, I am going to describe these three different latencies in greater detail, including possible data and visualization you could get using VRLatency package.
 
 Display Latency
 +++++++++++++++
