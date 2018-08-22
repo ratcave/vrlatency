@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports
 from struct import unpack
+from io import BytesIO
 
 
 class Arduino(object):
@@ -14,12 +15,12 @@ class Arduino(object):
         - n_points:
         - channel:
     """
-    options = {'Display': dict(packet_fmt='I2H', packet_size=8, n_points=500),
-               'Total': dict(packet_fmt='I3H?', packet_size=11, n_points=200),
-               'Tracking': dict(packet_fmt='-', packet_size=0, n_points=0),
+    options = {'Display': dict(packet_fmt='I2H', packet_size=8),
+               'Total': dict(packet_fmt='I3H?', packet_size=11),
+               'Tracking': dict(packet_fmt='-', packet_size=0),
                }
 
-    def __init__(self, port, baudrate, packet_fmt, packet_size, n_points):
+    def __init__(self, port, baudrate, packet_fmt, packet_size):
         """
         Interfaces and Connects to an arduino running the VRLatency programs.
 
@@ -31,7 +32,6 @@ class Arduino(object):
         self.baudrate = baudrate
         self.packet_fmt = packet_fmt
         self.packet_size = packet_size
-        self.n_points = n_points
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
         self.channel.readline()
 
@@ -65,7 +65,17 @@ class Arduino(object):
         Returns:
             - list: data recorded by arduino
         """
-        return [unpack('<' + self.packet_fmt, self.channel.read(self.packet_size)) for _ in range(self.n_points)]
+        packets = BytesIO(self.channel.read_all())
+        dd = []
+        while True:
+            packet = packets.read(self.packet_size)
+            if packet:
+                d = unpack('<' + self.packet_fmt, packet)
+                dd.append(d)
+            else:
+                break
+
+        return dd
 
     def write(self, msg):
         """Write to arduino over serial channel
