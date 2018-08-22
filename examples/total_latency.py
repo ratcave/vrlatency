@@ -20,9 +20,9 @@ led = client.rigid_bodies['LED']
 # create an experiment app
 myexp = vrl.TotalExperiment(arduino=myarduino,
                             stim=mystim,
-                            on_width=.05,
+                            on_width=[.05, .07],
                             rigid_body=led,
-                            trials=100,
+                            trials=200,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()
@@ -33,7 +33,7 @@ print(df.head())
 
 latencies = get_total_latencies(df)
 
-sns.distplot(latencies, bins=31)
+sns.distplot(latencies, bins=100)
 plt.show()
 
 # # get the data
