@@ -59,7 +59,7 @@ void loop() {
       
       for (i=0; i<pkt_n_point; i++){
         Packet data = {micros(), analogRead(analogPin_Left), analogRead(analogPin_Right), trial, led_state};
-        Serial.write((byte*)&data, 11);
+        Serial.write((byte*)&data, 11); // 4 + 2 + 2 + 2 + 1
         }
       }
     else if (received_data == 82){

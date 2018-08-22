@@ -29,7 +29,7 @@ void loop() {
     trial++;
     for (i=0; i < pkt_n_point; i++){
       Packet data = {micros(), analogRead(analogPin_Left), trial};
-      Serial.write((byte*)&data, 8);
+      Serial.write((byte*)&data, 8); // 4 + 2 + 2
     }
   }
 }
