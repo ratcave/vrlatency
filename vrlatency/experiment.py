@@ -9,6 +9,9 @@ from datetime import datetime
 from collections import OrderedDict
 import csv
 from tqdm import tqdm
+import subprocess
+from warnings import warn
+import sys
 
 
 class BaseExperiment(pyglet.window.Window):
@@ -26,7 +29,7 @@ class BaseExperiment(pyglet.window.Window):
     """
 
     def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None,
-                 on_width=.5, off_width=.5, bckgrnd_color=(0, 0, 0), *args, **kwargs):
+                 on_width=.5, bckgrnd_color=(0, 0, 0), *args, **kwargs):
         """Integrates other components and let's use to run, record and store experiment data
 
         Arguments:
@@ -59,12 +62,33 @@ class BaseExperiment(pyglet.window.Window):
         self.trials = trials
         self.current_trial = 0
         self.on_width = _gen_iter(on_width)
-        self.off_width = _gen_iter(off_width)
+        self.off_width = _gen_iter(on_width[0]) if len(on_width) > 1 else self.on_width
 
         self.params = OrderedDict()
         self.params['Experiment'] = self.__class__.__name__
         self.params['Date'] = datetime.now().strftime('%d.%m.%Y')
         self.params['Time'] = datetime.now().strftime('%H:%M:%S')
+        disp_params = {key.title(): value for key, value in screen.get_mode().__dict__.items() if isinstance(value, int)}
+
+        if sys.platform == 'win32':
+            code = r"""
+                 $Monitors = Get-WmiObject WmiMonitorID -Namespace root\wmi
+
+                 ForEach ($Monitor in $Monitors){
+                   $Manufacturer = ($Monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join ""
+                   $Name = ($Monitor.UserFriendlyName -notmatch 0 | ForEach{[char]$_}) -join ""
+                   $Serial = ($Monitor.SerialNumberID -notmatch 0 | ForEach{[char]$_}) -join ""
+
+                   echo "$Manufacturer,$Name,$Serial"
+                 }
+                 """
+            proc = subprocess.Popen(['powershell', code], stdout=subprocess.PIPE)
+            res = proc.communicate()[0].decode('utf8')
+            disp_params['Monitors'] = ', '.join(res.replace(',', '_').splitlines())
+        else:
+            disp_params['Monitors'] = ' '
+            warn("Monitor Name not detected; Feature only supported on Windows.")
+        self.params.update(disp_params)
 
     def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
@@ -99,7 +123,6 @@ class BaseExperiment(pyglet.window.Window):
         self._bckgrnd_color = value
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
-    @abstractmethod
     def save(self, path):
         """ Save data into a csv file """
 
@@ -146,7 +169,7 @@ class TrackingExperiment(BaseExperiment):
         3. Timing between the movement command and changes in position are compared and the tracking delay is characterized
     """
 
-    def __init__(self, rigid_body, trial_period=.04, *args, **kwargs):
+    def __init__(self, rigid_body, on_width=.04, *args, **kwargs):
         """ Integrates all the needed elements for tracking latency measuremnt
 
         Arguments:
@@ -157,13 +180,13 @@ class TrackingExperiment(BaseExperiment):
         """
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
-        self.trial_period = _gen_iter(trial_period)
+        self.on_width = _gen_iter(on_width)
         self.data_columns = ['Time', 'LED_Position', 'Trial']
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
-        next_trial_period = next(self.trial_period)
+        next_trial_period = next(self.on_width)
         while (perf_counter() - start_time) < next_trial_period:
             t, led_pos = perf_counter(), self.rigid_body.position.z
             sleep(.001)  # to decrease the data point resolution to a millisecond
@@ -183,7 +206,7 @@ class TotalExperiment(BaseExperiment):
         By comparing the timing between the LED_state and the photodiode data the delay can be characterized
     """
 
-    def __init__(self, stim, rigid_body, *args, **kwargs):
+    def __init__(self, stim, rigid_body, stim_distance=.01, *args, **kwargs):
         """ Integrates all the needed elements for total latency measuremnt
 
         Arguments:
@@ -196,9 +219,17 @@ class TotalExperiment(BaseExperiment):
         self.rigid_body = rigid_body
         self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
 
+        self.stim_distance = stim_distance
+        mean_rb_pos, n_checks = 0, 20
+        for _ in range(n_checks):
+            self.arduino.init_next_trial()
+            sleep(.02)
+            mean_rb_pos += mean_rb_pos / float(n_checks)
+        self.mean_rb_pos = mean_rb_pos
+
     def run_trial(self):
         """ A single trial"""
-        self.stim.position = (self.rigid_body.position.z - 1.035) * 2, 0
+        self.stim.position = self.stim_distance * (self.rigid_body.position.z - self.mean_rb_pos), 0
         self.clear()
         self.stim.draw()
         self.flip()

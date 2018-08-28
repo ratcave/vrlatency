@@ -10,12 +10,12 @@ class Stimulus:
         self.size = size
 
     def draw(self):
-        vertices = pyglet.graphics.vertex_list(1, ('v2i', self.norm_to_pixel()), ('c3B', self.color))
+        vertices = pyglet.graphics.vertex_list(1, ('v2i', self._norm_to_pixel()), ('c3B', self.color))
 
         pyglet.gl.glPointSize(self.size)
         vertices.draw(pyglet.gl.GL_POINTS)
 
-    def norm_to_pixel(self):
+    def _norm_to_pixel(self):
         """ Returns pixel values for a given normalized stimulus position
 
         NOTE: if you want the normalization to be between -.5 and .5, rmeove the division by 2 for the self._position.

@@ -1,34 +1,57 @@
 import click
 import vrlatency as vrl
+from datetime import datetime
 
 @click.command()
+@click.option('--experiment_type', type=click.Choice(['display', 'tracking', 'total']))
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
-@click.argument('experiment_type')
-def main(experiment_type, trials, port, baudrate):
+@click.option('--stimdistance', default=.01)
+@click.option('--stimsize', default=10)
+@click.option('--screen', default=0)
+@click.option('--interval', default=.05)
+@click.option('--jitter/--no-jitter', default=True)
+@click.option('--rigid_body', default='LED')
 
-    # connect to arduino
-    arduino = vrl.Arduino(experiment_type=experiment_type, port=port, baudrate=baudrate)
+def main(experiment_type, trials, port, baudrate, stimdistance, stimsize, screen, interval, jitter, rigid_body):
+
+    # Get Rigid Body
+    if experiment_type.lower() != 'display':
+        try:
+            import natnetclient as natnet
+            client = natnet.NatClient()
+            try:
+                led = client.rigid_bodies[rigid_body]
+            except KeyError:
+                raise KeyError("No Motive Rigid Body detected named '{}'.".format(rigid_body))
+            if led.position is None:
+                raise IOError("Motive is not sending rigid body positions")
+        except ConnectionResetError:
+            raise ConnectionResetError("Cannot detect Tracking Client.  Is Motive sending data?")
+    else:
+        led = None
 
     # create an stimulus
-    stim = vrl.Stimulus(position=(0, 0), color=(1, 0, 0))
+    stim = vrl.Stimulus(position=(0, 0), color=(255, 255, 255), size=stimsize)
+    experiments = {'display': vrl.DisplayExperiment, 'tracking': vrl.TrackingExperiment, 'total': vrl.TotalExperiment}
 
-    if experiment_type == 'Display':
-        exp = vrl.DisplayExperiment(#arduino=arduino,
-                                    stim=stim, on_width=0.1, off_width=[0.01, .1], trials=trials)
-    elif experiment_type == 'Tracking':
-        exp = vrl.TrackingExperiment(arduino=arduino)
-    elif experiment_type == 'Total':
-        exp = vrl.TotalExperiment(arduino=arduino)
-    else:
-        raise ValueError("Experiment type can only take the following arguements:"
-                         "\n-Display"
-                         "\n-Tracking"
-                         "\n-Total")
+    arduino = vrl.Arduino.from_experiment_type(experiment_type=experiment_type.title(), port=port, baudrate=baudrate)
 
+    on_width = [interval, interval * 2] if jitter else interval
+
+    params = dict(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width)
+
+    additional_params = {'display': dict(screen_ind=screen, stim=stim),
+                         'tracking': dict(rigid_body=led),
+                         'total': dict(screen_ind=screen, stim=stim, rigid_body=led, stim_distance=stimdistance)}
+    params.update(additional_params[experiment_type.lower()])
+
+    exp = experiments[experiment_type](**params)
     exp.run()
 
+    filename = '{}_{}.csv'.format(experiment_type.lower(), datetime.now().strftime('%Y%m%d_%H%M%S'))
+    exp.save(path=filename)
 
 if __name__ == "__main__":
     main()
