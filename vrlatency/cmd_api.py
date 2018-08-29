@@ -1,5 +1,6 @@
 import click
 import vrlatency as vrl
+import time
 
 
 def get_rigid_body(rigid_body):
@@ -21,8 +22,7 @@ def get_rigid_body(rigid_body):
 
 @click.group()
 def cli():
-    click.echo('Hello, world')
-
+    pass
 
 @cli.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
@@ -57,14 +57,28 @@ def total(port, baudrate, trials, stimdistance, stimsize, screen, interval, jitt
 @click.option('--jitter/--no-jitter', default=True, help="Whether to add a randomized delay to the onset of stimulus presentation.")
 @click.option('--allmodes/--singlemode', default=False, help="Whether to run experiment repeatedly, for all screen modes.")
 def display(port, baudrate, trials, stimsize, screen, interval, jitter, allmodes):
-
-    stim = vrl.Stimulus(size=stimsize)
     arduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port=port, baudrate=baudrate)
 
+    stim = vrl.Stimulus(size=stimsize)
     on_width = [interval, interval * 2] if jitter else interval
-    exp = vrl.DisplayExperiment(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width, screen_ind=screen, stim=stim)
-    exp.run()
-    exp.save()
+
+    monitor = vrl.screens[screen]
+    original_mode = monitor.get_mode()
+    modes = monitor.get_modes() if allmodes else [original_mode]
+
+    for mode in modes:
+        if not arduino.is_connected:
+            arduino.connect()
+
+        if allmodes:
+            monitor.set_mode(mode)
+        exp = vrl.DisplayExperiment(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width, screen_ind=screen, stim=stim)
+        exp.run()
+        exp.save()
+
+    if allmodes:
+        monitor.set_mode(original_mode)
+
 
 @cli.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")

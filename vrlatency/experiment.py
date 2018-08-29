@@ -12,6 +12,9 @@ from tqdm import tqdm
 import subprocess
 import sys
 
+platform = pyglet.window.get_platform()
+display = platform.get_default_display()
+screens = display.get_screens()
 
 class BaseExperiment(pyglet.window.Window):
     """Experiment abstract base method
@@ -42,9 +45,7 @@ class BaseExperiment(pyglet.window.Window):
             - *args, **kwargs: other arguments of pyglet Window class
         """
 
-        platform = pyglet.window.get_platform()
-        display = platform.get_default_display()
-        screen = display.get_screens()[screen_ind]
+        screen = screens[screen_ind]
         super().__init__(screen=screen, *args, **kwargs)
 
         self.arduino = arduino

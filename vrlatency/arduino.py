@@ -52,6 +52,10 @@ class Arduino(object):
             if ('Arduino' or 'arduino') in str(p):
                 print(p)
 
+    def connect(self):
+        """Connect the device."""
+        self.channel.open()
+
     def disconnect(self):
         """Disconnect the device"""
         self.channel.close()
