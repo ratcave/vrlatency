@@ -1,7 +1,7 @@
 import click
 import vrlatency as vrl
-import time
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def get_rigid_body(rigid_body):
     try:
@@ -75,6 +75,14 @@ def display(port, baudrate, trials, stimsize, screen, interval, jitter, allmodes
         exp = vrl.DisplayExperiment(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width, screen_ind=screen, stim=stim)
         exp.run()
         exp.save()
+
+        df = vrl.read_csv(exp.filename)
+        click.echo(df.head())
+        latencies = vrl.get_display_latencies(df)
+
+
+        sns.distplot(latencies.iloc[1:] / 1000.)
+        plt.show()
 
     if allmodes:
         monitor.set_mode(original_mode)

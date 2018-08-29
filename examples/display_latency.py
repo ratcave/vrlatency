@@ -16,7 +16,7 @@ myexp = vrl.DisplayExperiment(arduino=myarduino,
                               trials=100,
                               fullscreen=True, screen_ind=1,
                               stim=mystim,
-                              on_width=[.03, .06])
+                              on_width=[.05, .08])
 
 myexp.run()
 myexp.save(path)

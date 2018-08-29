@@ -110,6 +110,7 @@ class BaseExperiment(pyglet.window.Window):
         if not filename:
             experiment_type = self.params['Experiment'].split('Exp')[0]
             filename = '{}_{}.csv'.format(experiment_type.lower(), datetime.now().strftime('%Y%m%d_%H%M%S'))
+        self.filename = filename  # TODO: This is dumb.  Fix this!
 
         with open(filename, "w", newline='') as csv_file:
             header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]

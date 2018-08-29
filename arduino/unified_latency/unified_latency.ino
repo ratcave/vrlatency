@@ -49,7 +49,8 @@ void loop() {
       digitalWrite(9, LOW);
       digitalWrite(11, LOW);
       for (i=0; i < pkt_n_point; i++){
-        averaged_sensor_value = (analogRead(analogPin_Left) + analogRead(analogPin_Right)) / 2;
+        //averaged_sensor_value = (analogRead(analogPin_Left) + analogRead(analogPin_Right)) / 2;
+        averaged_sensor_value = analogRead(analogPin_Left);
         Packet data = {micros(), averaged_sensor_value};
         Serial.write((byte*)&data, 6); // 4 + 2
       }
