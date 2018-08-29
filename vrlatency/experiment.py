@@ -10,7 +10,6 @@ from collections import OrderedDict
 import csv
 from tqdm import tqdm
 import subprocess
-from warnings import warn
 import sys
 
 
