@@ -6,7 +6,7 @@ int averaged_sensor_value = 0;
 
 bool led_state = 0;
 int i = 0;
-int pkt_n_point = 200;
+int pkt_n_point = 80;
 
 int received_data = 0;
 int ping = 0;
