@@ -15,6 +15,6 @@ setup(
 
     entry_points='''
         [console_scripts]
-        measure_latency = vrlatency.cmd_api:main
+        measure_latency = vrlatency.cmd_api:cli
     ''',
 )
