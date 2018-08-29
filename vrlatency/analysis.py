@@ -31,11 +31,11 @@ def get_display_latencies(df):
 def get_tracking_latencies(df):
     """ Returns the latency values for each trial of a Tracking Experiment"""
     def detect_latency(df, thresh):
-        diff = np.diff(df.LED_Position > thresh)
+        diff = np.diff(df.RigidBody_Position > thresh)
         idx = np.where(diff != 0)[0][0]
         return df.Time.iloc[idx] - df.Time.iloc[0]
 
-    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.LED_Position.mean())
+    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.RigidBody_Position.mean())
     latencies.name = 'TrackingLatency'
     return latencies
 

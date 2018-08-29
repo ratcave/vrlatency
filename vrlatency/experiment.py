@@ -81,7 +81,6 @@ class BaseExperiment(pyglet.window.Window):
             self.dispatch_events()
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
-
             if self.current_trial == 1 and remove_first_trial:
                 self.data = []
 
@@ -128,7 +127,7 @@ class DisplayExperiment(BaseExperiment):
         """ 
         """
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
-        self.data_columns = ['Time', 'SensorBrightness', 'Trial']
+        self.data_columns = ['Trial', 'Time', 'SensorBrightness']
 
     def run_trial(self):
         """A single trial"""
@@ -139,7 +138,8 @@ class DisplayExperiment(BaseExperiment):
         self.clear()
         self.flip()
         sleep(next(self.off_width))
-        self.data.extend(self.arduino.read()) if self.arduino else None
+        dd = [(self.current_trial,) + el for el in self.arduino.read()]
+        self.data.extend(dd) if self.arduino else None
 
 
 class TrackingExperiment(BaseExperiment):
@@ -165,17 +165,22 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
         self.on_width = _gen_iter(on_width)
-        self.data_columns = ['Time', 'LED_Position', 'Trial']
+        self.data_columns = ['Trial', 'Time', 'RigidBody_Position', 'LED_Position']
 
     def run_trial(self):
         """A single trial"""
         start_time = perf_counter()
         next_trial_period = next(self.on_width)
-        while (perf_counter() - start_time) < next_trial_period:
-            t, led_pos = perf_counter(), self.rigid_body.position.z
-            sleep(.001)  # to decrease the data point resolution to a millisecond
-            self.data.append([t, led_pos, self.current_trial])
 
+        data = []
+        while (perf_counter() - start_time) < next_trial_period:
+            t, rb_pos = perf_counter(), self.rigid_body.position.z
+            sleep(.001)  # to decrease the data point resolution to a millisecond
+            data.append([self.current_trial, t, rb_pos])
+
+        led_pos = 'L' if self.arduino.read()[0][0] else 'R'
+        data = [el + [led_pos] for el in data]
+        self.data.extend(data) if self.arduino else None
 
 class TotalExperiment(BaseExperiment):
     """Experiment object for total latency measurement
@@ -201,7 +206,7 @@ class TotalExperiment(BaseExperiment):
 
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
         self.rigid_body = rigid_body
-        self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
+        self.data_columns = ['Trial', 'Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'LED_State']
 
         self.stim_distance = stim_distance
         mean_rb_pos, n_checks = 0, 100
@@ -219,7 +224,8 @@ class TotalExperiment(BaseExperiment):
         self.stim.draw()
         self.flip()
         sleep(next(self.on_width))
-        self.data.extend(self.arduino.read()) if self.arduino else None
+        dd = [(self.current_trial,) + el for el in self.arduino.read()]
+        self.data.extend(dd) if self.arduino else None
 
 
 def _gen_iter(vals):

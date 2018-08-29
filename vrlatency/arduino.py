@@ -15,9 +15,9 @@ class Arduino(object):
         - n_points:
         - channel:
     """
-    options = {'Display': dict(packet_fmt='I2H', packet_size=8, exp_char='D'),
-               'Total': dict(packet_fmt='I3H?', packet_size=11, exp_char='S'),
-               'Tracking': dict(packet_fmt='-', packet_size=0, exp_char='T'),
+    options = {'Display': dict(packet_fmt='IH', packet_size=6, exp_char='D'),
+               'Total': dict(packet_fmt='I2H?', packet_size=9, exp_char='S'),
+               'Tracking': dict(packet_fmt='?', packet_size=1, exp_char='T'),
                }
 
     def __init__(self, port, baudrate, packet_fmt, packet_size, exp_char):
@@ -35,6 +35,7 @@ class Arduino(object):
         self.exp_char = exp_char
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
         self.channel.readline()
+        self.channel.read_all()
 
     @classmethod
     def from_experiment_type(cls, experiment_type, *args, **kwargs):

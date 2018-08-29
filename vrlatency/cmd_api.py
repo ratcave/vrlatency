@@ -7,12 +7,12 @@ import vrlatency as vrl
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
-@click.option('--stimdistance', default=.01)
-@click.option('--stimsize', default=10)
-@click.option('--screen', default=0)
-@click.option('--interval', default=.05)
-@click.option('--jitter/--no-jitter', default=True)
-@click.option('--rigid_body', default='LED')
+@click.option('--stimdistance', default=.01, help="Percent of screen width to move stimulus in Total experiment.")
+@click.option('--stimsize', default=10, help="Size of light stimulus projected onscreen.")
+@click.option('--screen', default=0, help="Monitor number to display stimulus on.")
+@click.option('--interval', default=.05, help="Time duration that a stimulus is shown in a trial, in seconds.")
+@click.option('--jitter/--no-jitter', default=True, help="Whether to add a randomized delay to the onset of stimulus presentation.")
+@click.option('--rigid_body', default='LED', help="Name of rigid body from tracker that represents the arduino's LEDs.")
 def main(type, trials, port, baudrate, stimdistance, stimsize, screen, interval, jitter, rigid_body):
 
     experiment_type = type
