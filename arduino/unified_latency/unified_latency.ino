@@ -30,8 +30,8 @@ void setup() {
   pinMode(left_LED, OUTPUT);
 
   // set the LEDs high or low
-  digitalWrite(9, LOW);
-  digitalWrite(11, LOW);
+  digitalWrite(9, HIGH);
+  digitalWrite(11, HIGH);
   digitalWrite(right_LED, LOW);
   digitalWrite(left_LED, LOW);
 
@@ -47,6 +47,10 @@ void loop() {
     received_data = Serial.read();
 
     if (received_data == 68){ // ord('D') - Display
+      digitalWrite(9, LOW);
+      digitalWrite(11, LOW);
+      digitalWrite(right_LED, LOW);
+      digitalWrite(left_LED, LOW);
       trial++;
       for (i=0; i < pkt_n_point; i++){
         Packet data = {micros(), analogRead(analogPin_Left), trial};

@@ -20,9 +20,10 @@ led = client.rigid_bodies['LED']
 # create an experiment app
 myexp = vrl.TotalExperiment(arduino=myarduino,
                             stim=mystim,
+                            stim_distance=1.8,
                             on_width=[.05, .07],
                             rigid_body=led,
-                            trials=200,
+                            trials=500,
                             screen_ind=1,
                             fullscreen=True)
 myexp.run()

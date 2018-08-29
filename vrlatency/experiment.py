@@ -96,7 +96,7 @@ class BaseExperiment(pyglet.window.Window):
 
     def run(self, remove_first_trial=True):
         """Runs the experiment"""
-        for self.current_trial in tqdm(range(1, self.trials + 2)):
+        for self.current_trial in tqdm(range(1, self.trials + 2), ascii=True):
             self.dispatch_events()
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
@@ -220,11 +220,12 @@ class TotalExperiment(BaseExperiment):
         self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
 
         self.stim_distance = stim_distance
-        mean_rb_pos, n_checks = 0, 20
-        for _ in range(n_checks):
+        mean_rb_pos, n_checks = 0, 100
+        for _ in tqdm(range(n_checks), ascii=True, desc="Finding the mean"):
             self.arduino.init_next_trial()
-            sleep(.02)
-            mean_rb_pos += mean_rb_pos / float(n_checks)
+            sleep(.05)
+            mean_rb_pos += self.rigid_body.position.z / float(n_checks)
+            self.arduino.channel.read_all()  # empty the buffer
         self.mean_rb_pos = mean_rb_pos
 
     def run_trial(self):

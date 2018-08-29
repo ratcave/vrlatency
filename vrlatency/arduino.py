@@ -88,8 +88,7 @@ class Arduino(object):
 
     def init_next_trial(self):
         """ Sends a message to arduino to signal start of a trial"""
-        print("writing to serial")
-        self.write('S') #self.exp_char
+        self.write(self.exp_char)
 
 
     # TODO: Add pinging to Arduino code (added to total, but not others!)
