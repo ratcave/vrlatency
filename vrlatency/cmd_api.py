@@ -18,7 +18,13 @@ def get_rigid_body(rigid_body):
     return led
 
 
-@click.command()
+
+@click.group()
+def cli():
+    click.echo('Hello, world')
+
+
+@cli.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
@@ -41,7 +47,7 @@ def total(port, baudrate, trials, stimdistance, stimsize, screen, interval, jitt
     exp.save()
 
 
-@click.command()
+@cli.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
@@ -60,7 +66,7 @@ def display(port, baudrate, trials, stimsize, screen, interval, jitter, allmodes
     exp.run()
     exp.save()
 
-@click.command()
+@cli.command()
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
@@ -77,14 +83,6 @@ def tracking(port, baudrate, trials, interval, jitter, rigid_body):
     exp.run()
     exp.save()
 
-
-@click.group()
-def cli():
-    pass
-
-cli.add_command(total)
-cli.add_command(display)
-cli.add_command(tracking)
 
 if __name__ == "__main__":
     cli()
