@@ -3,7 +3,7 @@ import vrlatency as vrl
 from datetime import datetime
 
 @click.command()
-@click.option('--experiment_type', type=click.Choice(['display', 'tracking', 'total']))
+@click.option('--type', type=click.Choice(['display', 'tracking', 'total']))
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
 @click.option('--baudrate', default=250000, help="Serial communication baudrate")
 @click.option('--trials', default=20, help="Number of trials for measurement")
@@ -13,10 +13,9 @@ from datetime import datetime
 @click.option('--interval', default=.05)
 @click.option('--jitter/--no-jitter', default=True)
 @click.option('--rigid_body', default='LED')
+def main(type, trials, port, baudrate, stimdistance, stimsize, screen, interval, jitter, rigid_body):
 
-def main(experiment_type, trials, port, baudrate, stimdistance, stimsize, screen, interval, jitter, rigid_body):
-
-    # Get Rigid Body
+    experiment_type = type
     if experiment_type.lower() != 'display':
         try:
             import natnetclient as natnet
@@ -49,9 +48,7 @@ def main(experiment_type, trials, port, baudrate, stimdistance, stimsize, screen
 
     exp = experiments[experiment_type](**params)
     exp.run()
-
-    filename = '{}_{}.csv'.format(experiment_type.lower(), datetime.now().strftime('%Y%m%d_%H%M%S'))
-    exp.save(path=filename)
+    exp.save()
 
 if __name__ == "__main__":
     main()

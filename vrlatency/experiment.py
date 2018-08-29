@@ -48,6 +48,8 @@ class BaseExperiment(pyglet.window.Window):
         screen = display.get_screens()[screen_ind]
         super().__init__(screen=screen, *args, **kwargs)
 
+        self.experiment_type = 'Unknown'
+
         self.arduino = arduino
         if not arduino:
             warn('Arduino not set for experiment.  Data will not be sent or received.')
@@ -123,11 +125,13 @@ class BaseExperiment(pyglet.window.Window):
         self._bckgrnd_color = value
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
-    def save(self, path):
+    def save(self, filename=None):
         """ Save data into a csv file """
 
-        # write the experiment parameters (header)
-        with open(path, "w", newline='') as csv_file:
+        if not filename:
+            filename = '{}_{}.csv'.format(self.experiment_type.lower(), datetime.now().strftime('%Y%m%d_%H%M%S'))
+
+        with open(filename, "w", newline='') as csv_file:
             header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]
             csv_file.writelines(header)
             csv_file.write("\n")
@@ -144,6 +148,7 @@ class DisplayExperiment(BaseExperiment):
         """ 
         """
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
+        self.experiment_type = 'Display'
         self.data_columns = ['Time', 'SensorBrightness', 'Trial']
 
     def run_trial(self):
@@ -181,6 +186,7 @@ class TrackingExperiment(BaseExperiment):
         super(self.__class__, self).__init__(*args, visible=False, **kwargs)
         self.rigid_body = rigid_body
         self.on_width = _gen_iter(on_width)
+        self.experiment_type = 'Tracking'
         self.data_columns = ['Time', 'LED_Position', 'Trial']
 
     def run_trial(self):
@@ -217,6 +223,7 @@ class TotalExperiment(BaseExperiment):
 
         super(self.__class__, self).__init__(*args, stim=stim, **kwargs)
         self.rigid_body = rigid_body
+        self.experiment_type = 'Total'
         self.data_columns = ['Time', 'LeftSensorBrightness', 'RightSensorBrightness', 'Trial', 'LED_State']
 
         self.stim_distance = stim_distance
