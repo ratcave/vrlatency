@@ -225,7 +225,7 @@ class TotalExperiment(BaseExperiment):
             self.arduino.init_next_trial()
             sleep(.05)
             mean_rb_pos += self.rigid_body.position.z / float(n_checks)
-            self.arduino.channel.read_all()  # empty the buffer
+            self.arduino.channel.read_all()  # empty the buffer (because Arduino is sending info anyway)
         self.mean_rb_pos = mean_rb_pos
 
     def run_trial(self):
