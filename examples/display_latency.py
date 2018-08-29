@@ -9,7 +9,7 @@ path = "C:/Users/sirotalab/Desktop/Measurement/display_exp_test.csv"
 myarduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port='COM9', baudrate=250000)
 
 # create a stimulus
-mystim = vrl.Stimulus(position=(0, 0), size=300)
+mystim = vrl.Stimulus(position=(0, 0), size=200)
 
 # create an experiment
 myexp = vrl.DisplayExperiment(arduino=myarduino,
