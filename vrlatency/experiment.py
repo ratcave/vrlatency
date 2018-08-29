@@ -86,7 +86,7 @@ class BaseExperiment(pyglet.window.Window):
                  """
             proc = subprocess.Popen(['powershell', code], stdout=subprocess.PIPE)
             res = proc.communicate()[0].decode('utf8')
-            disp_params['Monitors'] = ', '.join(res.replace(',', '_').splitlines())
+            disp_params['Monitors'] = ' | '.join(res.replace(',', '_').splitlines())
         else:
             disp_params['Monitors'] = ' '
             warn("Monitor Name not detected; Feature only supported on Windows.")
