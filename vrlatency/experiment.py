@@ -62,7 +62,7 @@ class BaseExperiment(pyglet.window.Window):
         self.trials = trials
         self.current_trial = 0
         self.on_width = _gen_iter(on_width)
-        self.off_width = _gen_iter(on_width[0]) if len(on_width) > 1 else self.on_width
+        self.off_width = _gen_iter(on_width[0]) if hasattr(on_width, '__iter__') else _gen_iter(on_width)
 
         self.params = OrderedDict()
         self.params['Experiment'] = self.__class__.__name__
