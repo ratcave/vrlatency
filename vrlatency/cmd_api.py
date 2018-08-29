@@ -1,6 +1,7 @@
 import click
 import vrlatency as vrl
 
+
 @click.command()
 @click.option('--type', type=click.Choice(['display', 'tracking', 'total']))
 @click.option('--port', default='COM9', help="Port that Arduino board is connected to")
