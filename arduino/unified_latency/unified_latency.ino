@@ -49,8 +49,6 @@ void loop() {
     if (received_data == 68){ // ord('D') - Display
       digitalWrite(9, LOW);
       digitalWrite(11, LOW);
-      digitalWrite(right_LED, LOW);
-      digitalWrite(left_LED, LOW);
       trial++;
       for (i=0; i < pkt_n_point; i++){
         Packet data = {micros(), analogRead(analogPin_Left), trial};
