@@ -10,7 +10,6 @@ from collections import OrderedDict
 import csv
 from tqdm import tqdm
 import subprocess
-from warnings import warn
 import sys
 
 
@@ -69,25 +68,7 @@ class BaseExperiment(pyglet.window.Window):
         self.params['Date'] = datetime.now().strftime('%d.%m.%Y')
         self.params['Time'] = datetime.now().strftime('%H:%M:%S')
         disp_params = {key.title(): value for key, value in screen.get_mode().__dict__.items() if isinstance(value, int)}
-
-        if sys.platform == 'win32':
-            code = r"""
-                 $Monitors = Get-WmiObject WmiMonitorID -Namespace root\wmi
-
-                 ForEach ($Monitor in $Monitors){
-                   $Manufacturer = ($Monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join ""
-                   $Name = ($Monitor.UserFriendlyName -notmatch 0 | ForEach{[char]$_}) -join ""
-                   $Serial = ($Monitor.SerialNumberID -notmatch 0 | ForEach{[char]$_}) -join ""
-
-                   echo "$Manufacturer,$Name,$Serial"
-                 }
-                 """
-            proc = subprocess.Popen(['powershell', code], stdout=subprocess.PIPE)
-            res = proc.communicate()[0].decode('utf8')
-            disp_params['Monitors'] = ', '.join(res.replace(',', '_').splitlines())
-        else:
-            disp_params['Monitors'] = ' '
-            warn("Monitor Name not detected; Feature only supported on Windows.")
+        disp_params['Monitors'] = _get_display_name()
         self.params.update(disp_params)
 
     def on_close(self):
@@ -123,11 +104,14 @@ class BaseExperiment(pyglet.window.Window):
         self._bckgrnd_color = value
         pyglet.gl.glClearColor(value[0], value[1], value[2], 1)
 
-    def save(self, path):
+    def save(self, filename=None):
         """ Save data into a csv file """
 
-        # write the experiment parameters (header)
-        with open(path, "w", newline='') as csv_file:
+        if not filename:
+            experiment_type = self.params['Experiment'].split('Exp')[0]
+            filename = '{}_{}.csv'.format(experiment_type.lower(), datetime.now().strftime('%Y%m%d_%H%M%S'))
+
+        with open(filename, "w", newline='') as csv_file:
             header = ['{}: {}\n'.format(key, value) for key, value in self.params.items()]
             csv_file.writelines(header)
             csv_file.write("\n")
@@ -247,3 +231,27 @@ def _gen_iter(vals):
             yield random.uniform(vals[0], vals[1])
         else:
             raise TypeError("values passed as on_width and off_width must contain one or two values")
+
+
+def _get_display_name():
+    """ Returns the names of all the displays connected to the system"""
+    display_name = ' '
+    if sys.platform == 'win32':
+            code = r"""
+                 $Monitors = Get-WmiObject WmiMonitorID -Namespace root\wmi
+
+                 ForEach ($Monitor in $Monitors){
+                   $Manufacturer = ($Monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join ""
+                   $Name = ($Monitor.UserFriendlyName -notmatch 0 | ForEach{[char]$_}) -join ""
+                   $Serial = ($Monitor.SerialNumberID -notmatch 0 | ForEach{[char]$_}) -join ""
+
+                   echo "$Manufacturer,$Name,$Serial"
+                 }
+                 """
+            proc = subprocess.Popen(['powershell', code], stdout=subprocess.PIPE)
+            res = proc.communicate()[0].decode('utf8')
+            display_name = ' | '.join(res.replace(',', '_').splitlines())
+    else:
+        warn("Monitor Name not detected; Feature only supported on Windows.")
+
+    return display_name
