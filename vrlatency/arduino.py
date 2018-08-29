@@ -15,12 +15,12 @@ class Arduino(object):
         - n_points:
         - channel:
     """
-    options = {'Display': dict(packet_fmt='I2H', packet_size=8),
-               'Total': dict(packet_fmt='I3H?', packet_size=11),
-               'Tracking': dict(packet_fmt='-', packet_size=0),
+    options = {'Display': dict(packet_fmt='I2H', packet_size=8, exp_char='D'),
+               'Total': dict(packet_fmt='I3H?', packet_size=11, exp_char='S'),
+               'Tracking': dict(packet_fmt='-', packet_size=0, exp_char='T'),
                }
 
-    def __init__(self, port, baudrate, packet_fmt, packet_size):
+    def __init__(self, port, baudrate, packet_fmt, packet_size, exp_char):
         """
         Interfaces and Connects to an arduino running the VRLatency programs.
 
@@ -32,6 +32,7 @@ class Arduino(object):
         self.baudrate = baudrate
         self.packet_fmt = packet_fmt
         self.packet_size = packet_size
+        self.exp_char = exp_char
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
         self.channel.readline()
 
@@ -78,7 +79,7 @@ class Arduino(object):
         return dd
 
     def write(self, msg):
-        """Write to arduino over serial channel
+        """ Write to arduino over serial channel
 
         Arguments:
             - msg (str): message to be sent to arduino
@@ -86,8 +87,9 @@ class Arduino(object):
         self.channel.write(bytes(msg, 'utf-8'))
 
     def init_next_trial(self):
-        """Sends a message to arduino to signal start of a trial"""
-        self.write('S')
+        """ Sends a message to arduino to signal start of a trial"""
+        self.write(self.exp_char)
+
 
     # TODO: Add pinging to Arduino code (added to total, but not others!)
     def ping(self):
