@@ -1,6 +1,5 @@
 import click
 import vrlatency as vrl
-from datetime import datetime
 
 @click.command()
 @click.option('--type', type=click.Choice(['display', 'tracking', 'total']))
@@ -27,7 +26,7 @@ def main(type, trials, port, baudrate, stimdistance, stimsize, screen, interval,
             if led.position is None:
                 raise IOError("Motive is not sending rigid body positions")
         except ConnectionResetError:
-            raise ConnectionResetError("Cannot detect Tracking Client.  Is Motive sending data?")
+            raise ConnectionResetError("Cannot detect Tracking Client.  Is your tracking system sending data?")
     else:
         led = None
 
