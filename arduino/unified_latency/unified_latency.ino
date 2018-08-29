@@ -6,7 +6,7 @@ int averaged_sensor_value = 0;
 
 bool led_state = 0;
 int i = 0;
-int pkt_n_point = 80;  // make sure this value is similar to python side
+int pkt_n_point = 200;
 
 int received_data = 0;
 int ping = 0;
@@ -49,8 +49,7 @@ void loop() {
       digitalWrite(9, LOW);
       digitalWrite(11, LOW);
       for (i=0; i < pkt_n_point; i++){
-        //averaged_sensor_value = (analogRead(analogPin_Left) + analogRead(analogPin_Right)) / 2;
-        averaged_sensor_value = analogRead(analogPin_Left);
+        averaged_sensor_value = (analogRead(analogPin_Left) + analogRead(analogPin_Right)) / 2;
         Packet data = {micros(), averaged_sensor_value};
         Serial.write((byte*)&data, 6); // 4 + 2
       }
