@@ -31,7 +31,6 @@ def main(type, trials, port, baudrate, stimdistance, stimsize, screen, interval,
     else:
         led = None
 
-    # create an stimulus
     stim = vrl.Stimulus(position=(0, 0), color=(255, 255, 255), size=stimsize)
     experiments = {'display': vrl.DisplayExperiment, 'tracking': vrl.TrackingExperiment, 'total': vrl.TotalExperiment}
 
