@@ -3,6 +3,8 @@ import serial.tools.list_ports
 from struct import unpack, pack
 from io import BytesIO
 
+INPUT_BUFFER_MAXSIZE = 1600
+
 
 class Arduino(object):
     """ Handles attributes and methods related to stimulation/recording device
@@ -34,6 +36,8 @@ class Arduino(object):
         self.packet_size = packet_size
         self.exp_char = exp_char
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
+        self.channel.set_buffer_size(rx_size=4096 * 8)
+
         self.channel.readline()
         self.channel.read_all()
 
@@ -89,11 +93,13 @@ class Arduino(object):
         Arguments:
             - msg (str): message to be sent to arduino
         """
+        if nsamples * self.packet_size > INPUT_BUFFER_MAXSIZE:
+            raise ValueError("too many samples are requested for the network's input buffer to handle by PySerial.  Lower nsamples")
         packet = pack('<cH', bytes(msg, 'utf-8'), nsamples)
         self.channel.write(packet)
 
     def init_next_trial(self):
-        """ Sends a message to arduino to signal start of a trial"""
+        """ Sends a message to aruino to signal start of a trial"""
         self.write(self.exp_char)
 
 
