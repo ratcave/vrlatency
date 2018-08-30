@@ -6,7 +6,6 @@ int averaged_sensor_value = 0;
 
 bool led_state = 0;
 int i = 0;
-int pkt_n_point = 80;
 
 int received_data = 0;
 int ping = 0;
@@ -19,6 +18,13 @@ struct Packet {
   int right;
   bool LED_state;
 };
+
+struct Command {
+  char experiment_type;
+  unsigned short nsamples; 
+};
+
+byte input[3]; 
 
 void setup() {
   
@@ -43,19 +49,23 @@ void setup() {
 void loop() {
 
   if (Serial.available() > 0){
-    received_data = Serial.read();
-
-    if (received_data == 68){ // ord('D') - Display
+//    received_data = Serial.read();
+    Serial.readBytes(input, 3);    
+    Command* received_data = (Command*)&input;
+    Command command = *received_data;
+//    Serial.write((byte*)&command.nsamples, 2);
+    
+    if (command.experiment_type == 68){ // ord('D') - Display
       digitalWrite(9, LOW);
       digitalWrite(11, LOW);
-      for (i=0; i < pkt_n_point; i++){
+      for (i=0; i < command.nsamples; i++){
         averaged_sensor_value = (analogRead(analogPin_Left) + analogRead(analogPin_Right)) / 2;
         Packet data = {micros(), averaged_sensor_value};
         Serial.write((byte*)&data, 6); // 4 + 2
       }
     }
 
-    else if (received_data == 84){ // ord('T') - Tracking
+    else if (command.experiment_type == 84){ // ord('T') - Tracking
       toggle = !toggle;
       if(toggle){
         digitalWrite(right_LED, LOW);
@@ -68,7 +78,7 @@ void loop() {
       Serial.write(toggle);  // Send the LED position
     }
     
-    else if (received_data == 83){  // ord('S') - Total
+    else if (command.experiment_type == 83){  // ord('S') - Total
       if (led_state){
         digitalWrite(right_LED, LOW);
         digitalWrite(left_LED, HIGH);
@@ -80,7 +90,7 @@ void loop() {
         led_state = 1;
         }
       
-      for (i=0; i<pkt_n_point; i++){
+      for (i=0; i<command.nsamples; i++){
         Packet data = {micros(), analogRead(analogPin_Left), analogRead(analogPin_Right), led_state};
         Serial.write((byte*)&data, 9); // 4 + 2 + 2 + 1
         }

@@ -30,7 +30,7 @@ class BaseExperiment(pyglet.window.Window):
         - off_width:
     """
 
-    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None,
+    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None, trial_delay=.05,
                  on_width=.5, bckgrnd_color=(0, 0, 0), *args, **kwargs):
         """Integrates other components and let's use to run, record and store experiment data
 
@@ -63,6 +63,7 @@ class BaseExperiment(pyglet.window.Window):
         self.current_trial = 0
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(on_width[0]) if hasattr(on_width, '__iter__') else _gen_iter(on_width)
+        self.trial_delay = trial_delay
 
         self.params = OrderedDict()
         self.params['Experiment'] = self.__class__.__name__
@@ -71,6 +72,7 @@ class BaseExperiment(pyglet.window.Window):
         disp_params = {key.title(): value for key, value in screen.get_mode().__dict__.items() if isinstance(value, int)}
         disp_params['Monitors'] = _get_display_name()
         self.params.update(disp_params)
+        self.params['Trials'] = self.trials
 
     def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
@@ -78,8 +80,13 @@ class BaseExperiment(pyglet.window.Window):
 
     def run(self, remove_first_trial=True):
         """Runs the experiment"""
+        self.clear()
+        self.flip()
+        sleep(.5)
         for self.current_trial in tqdm(range(1, self.trials + 2), ascii=True):
             self.dispatch_events()
+            sleep(self.trial_delay)
+            self.flip()
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
             if self.current_trial == 1 and remove_first_trial:
