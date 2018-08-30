@@ -80,9 +80,13 @@ class BaseExperiment(pyglet.window.Window):
 
     def run(self, remove_first_trial=True):
         """Runs the experiment"""
+        self.clear()
+        self.flip()
+        sleep(.5)
         for self.current_trial in tqdm(range(1, self.trials + 2), ascii=True):
             self.dispatch_events()
             sleep(self.trial_delay)
+            self.flip()
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
             if self.current_trial == 1 and remove_first_trial:

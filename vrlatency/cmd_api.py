@@ -84,7 +84,8 @@ def display(port, baudrate, trials, stimsize, delay, screen, interval, jitter, a
         # ax2.hlines([df.SensorBrightness.quantile(0.5)], *ax2.get_xlim())
         ax2.hlines([perc_range(df.SensorBrightness, .75)], *ax2.get_xlim())
 
-        sns.distplot(latencies.iloc[1:] / 1000., ax=ax3)
+        sns.distplot(latencies.iloc[1:] / 1000., bins=80, ax=ax3)
+        ax3.set_xlim(0, 50)
         plt.show()
 
 

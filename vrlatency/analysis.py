@@ -25,8 +25,11 @@ def get_display_latencies(df):
     """ Returns the latency values for each trial of a Display Experiment"""
     def detect_latency(df, thresh):
         off_idx = np.where(df.SensorBrightness < thresh)[0][0]
-        detect_idx = np.where(df.SensorBrightness[off_idx:] > thresh)[0][0]
-        return df.Time.iloc[detect_idx + off_idx] - df.Time.iloc[0]
+        try:
+            detect_idx = np.where(df.SensorBrightness[off_idx:] > thresh)[0][0]
+            return df.Time.iloc[detect_idx + off_idx] - df.Time.iloc[0]
+        except IndexError:
+            return np.nan
 
     latencies = df.groupby('Trial').apply(detect_latency, thresh=perc_range(df.SensorBrightness, .75))
     latencies.name = 'DisplayLatency'
