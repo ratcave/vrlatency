@@ -6,7 +6,7 @@ int averaged_sensor_value = 0;
 
 bool led_state = 0;
 int i = 0;
-int pkt_n_point = 80;
+int pkt_n_point = 2000;
 
 int received_data = 0;
 int ping = 0;
@@ -53,6 +53,7 @@ void loop() {
         Packet data = {micros(), averaged_sensor_value};
         Serial.write((byte*)&data, 6); // 4 + 2
       }
+      Serial.print('\n');
     }
 
     else if (received_data == 84){ // ord('T') - Tracking

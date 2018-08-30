@@ -71,6 +71,7 @@ class BaseExperiment(pyglet.window.Window):
         disp_params = {key.title(): value for key, value in screen.get_mode().__dict__.items() if isinstance(value, int)}
         disp_params['Monitors'] = _get_display_name()
         self.params.update(disp_params)
+        self.params['Trials'] = self.trials
 
     def on_close(self):
         """Ends the experiment by closing the app window and disconnecting arduino"""
