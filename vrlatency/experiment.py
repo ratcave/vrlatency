@@ -30,7 +30,7 @@ class BaseExperiment(pyglet.window.Window):
         - off_width:
     """
 
-    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None,
+    def __init__(self, arduino=None, screen_ind=0, trials=20, stim=None, trial_delay=.05,
                  on_width=.5, bckgrnd_color=(0, 0, 0), *args, **kwargs):
         """Integrates other components and let's use to run, record and store experiment data
 
@@ -63,6 +63,7 @@ class BaseExperiment(pyglet.window.Window):
         self.current_trial = 0
         self.on_width = _gen_iter(on_width)
         self.off_width = _gen_iter(on_width[0]) if hasattr(on_width, '__iter__') else _gen_iter(on_width)
+        self.trial_delay = trial_delay
 
         self.params = OrderedDict()
         self.params['Experiment'] = self.__class__.__name__
@@ -81,6 +82,7 @@ class BaseExperiment(pyglet.window.Window):
         """Runs the experiment"""
         for self.current_trial in tqdm(range(1, self.trials + 2), ascii=True):
             self.dispatch_events()
+            sleep(self.trial_delay)
             self.arduino.init_next_trial() if self.arduino else None
             self.run_trial()
             if self.current_trial == 1 and remove_first_trial:

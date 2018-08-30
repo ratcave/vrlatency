@@ -17,15 +17,21 @@ def read_csv(path):
     return pd.read_csv(StringIO(body))
 
 
+
+def perc_range(x, perc):
+    return perc * np.ptp(x) + np.min(x)
+
 def get_display_latencies(df):
     """ Returns the latency values for each trial of a Display Experiment"""
     def detect_latency(df, thresh):
-        idx = np.where(df.SensorBrightness > thresh)[0][0]
-        return df.Time.iloc[idx] - df.Time.iloc[0]
+        off_idx = np.where(df.SensorBrightness < thresh)[0][0]
+        detect_idx = np.where(df.SensorBrightness[off_idx:] > thresh)[0][0]
+        return df.Time.iloc[detect_idx + off_idx] - df.Time.iloc[0]
 
-    latencies = df.groupby('Trial').apply(detect_latency, thresh=df.SensorBrightness.mean())
+    latencies = df.groupby('Trial').apply(detect_latency, thresh=perc_range(df.SensorBrightness, .75))
     latencies.name = 'DisplayLatency'
     return latencies
+
 
 
 def get_tracking_latencies(df):

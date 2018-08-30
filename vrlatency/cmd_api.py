@@ -1,8 +1,9 @@
 import click
 import vrlatency as vrl
+from vrlatency.analysis import perc_range
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import time
 
 def get_rigid_body(rigid_body):
     try:
@@ -45,9 +46,10 @@ def cli():
 @cli.command()
 @add_options(common_options)
 @click.option('--stimsize', default=10, help="Size of light stimulus projected onscreen.")
+@click.option('--delay', default=.03, help="start delay length (secs) of trial to wait for stimulus to turn off")
 @click.option('--screen', default=0, help="Monitor number to display stimulus on.")
 @click.option('--allmodes/--singlemode', default=False, help="Whether to run experiment repeatedly, for all screen modes.")
-def display(port, baudrate, trials, stimsize, screen, interval, jitter, allmodes):
+def display(port, baudrate, trials, stimsize, delay, screen, interval, jitter, allmodes):
     arduino = vrl.Arduino.from_experiment_type(experiment_type='Display', port=port, baudrate=baudrate)
 
     stim = vrl.Stimulus(size=stimsize)
@@ -63,19 +65,27 @@ def display(port, baudrate, trials, stimsize, screen, interval, jitter, allmodes
 
         if allmodes:
             monitor.set_mode(mode)
-        exp = vrl.DisplayExperiment(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width, screen_ind=screen, stim=stim)
+            time.sleep(10)
+
+        exp = vrl.DisplayExperiment(arduino=arduino, trials=trials, fullscreen=True, on_width=on_width,
+                                    trial_delay=delay, screen_ind=screen, stim=stim)
         exp.run()
         exp.save()
 
         df = vrl.read_csv(exp.filename)
+        df['TrialTime'] = df.groupby('Trial').Time.apply(lambda x: x - x.min())
+
         click.echo(df.head())
         latencies = vrl.get_display_latencies(df)
 
-        sns.distplot(latencies.iloc[1:] / 1000.)
-        plt.show()
+        fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)
+        sns.distplot(df['SensorBrightness'], bins=50, ax=ax1)
+        ax2.scatter(df['TrialTime'] / 1000, df['SensorBrightness'], alpha=.1, s=.2)
+        # ax2.hlines([df.SensorBrightness.quantile(0.5)], *ax2.get_xlim())
+        ax2.hlines([perc_range(df.SensorBrightness, .75)], *ax2.get_xlim())
 
-    if allmodes:
-        monitor.set_mode(original_mode)
+        sns.distplot(latencies.iloc[1:] / 1000., ax=ax3)
+        plt.show()
 
 
 @cli.command()
