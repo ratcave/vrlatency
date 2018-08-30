@@ -2,6 +2,7 @@ import serial
 import serial.tools.list_ports
 from struct import unpack, pack
 from io import BytesIO
+import time
 
 INPUT_BUFFER_MAXSIZE = 1600
 
@@ -22,7 +23,7 @@ class Arduino(object):
                'Tracking': dict(packet_fmt='?', packet_size=1, exp_char='T'),
                }
 
-    def __init__(self, port, baudrate, packet_fmt, packet_size, exp_char):
+    def __init__(self, port, baudrate, packet_fmt, packet_size, exp_char, nsamples=200):
         """
         Interfaces and Connects to an arduino running the VRLatency programs.
 
@@ -30,13 +31,17 @@ class Arduino(object):
             - port (str): The port the arduino is conected on (ex: 'COM8')
             - baudrate (int): The baud rate for the arduino connection.
         """
+
+        if nsamples * packet_size > INPUT_BUFFER_MAXSIZE:
+            raise ValueError("too many samples are requested for the network's input buffer to handle by PySerial.  Lower nsamples")
+
         self.port = port
         self.baudrate = baudrate
         self.packet_fmt = packet_fmt
         self.packet_size = packet_size
         self.exp_char = exp_char
+        self.nsamples = nsamples
         self.channel = serial.Serial(self.port, baudrate=self.baudrate, timeout=2.)
-        self.channel.set_buffer_size(rx_size=4096 * 8)
 
         self.channel.readline()
         self.channel.read_all()
@@ -75,6 +80,10 @@ class Arduino(object):
         Returns:
             - list: data recorded by arduino
         """
+
+        while self.channel.in_waiting < self.nsamples * self.packet_size:
+            time.sleep(.001)
+
         packets = BytesIO(self.channel.read_all())
         dd = []
         while True:
@@ -87,15 +96,13 @@ class Arduino(object):
 
         return dd
 
-    def write(self, msg, nsamples=200):
+    def write(self, msg):
         """ Write to arduino over serial channel
 
         Arguments:
             - msg (str): message to be sent to arduino
         """
-        if nsamples * self.packet_size > INPUT_BUFFER_MAXSIZE:
-            raise ValueError("too many samples are requested for the network's input buffer to handle by PySerial.  Lower nsamples")
-        packet = pack('<cH', bytes(msg, 'utf-8'), nsamples)
+        packet = pack('<cH', bytes(msg, 'utf-8'), self.nsamples)
         self.channel.write(packet)
 
     def init_next_trial(self):
