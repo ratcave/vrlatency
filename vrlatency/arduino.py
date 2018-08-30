@@ -1,6 +1,6 @@
 import serial
 import serial.tools.list_ports
-from struct import unpack
+from struct import unpack, pack
 from io import BytesIO
 
 
@@ -83,13 +83,14 @@ class Arduino(object):
 
         return dd
 
-    def write(self, msg):
+    def write(self, msg, nsamples=200):
         """ Write to arduino over serial channel
 
         Arguments:
             - msg (str): message to be sent to arduino
         """
-        self.channel.write(bytes(msg, 'utf-8'))
+        packet = pack('<cH', bytes(msg, 'utf-8'), nsamples)
+        self.channel.write(packet)
 
     def init_next_trial(self):
         """ Sends a message to arduino to signal start of a trial"""
