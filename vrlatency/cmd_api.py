@@ -34,7 +34,7 @@ def add_options(options):
     return _add_options
 
 
-def simplify_exception_output(verbose=True):
+def simplify_exception_output(verbose=True, levels=3):
     def decorator(fun):
         @functools.wraps(fun)
         def wrapper(*args, **kwargs):
@@ -45,7 +45,7 @@ def simplify_exception_output(verbose=True):
                 if verbose:
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     tb = exc_tb
-                    for _ in range(3):
+                    for _ in range(levels):
                         tb = tb.tb_next
                         if tb is None:
                             break
