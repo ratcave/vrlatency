@@ -4,6 +4,11 @@ from vrlatency.analysis import perc_range
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
+import sys
+import functools
+import traceback
+from os import path
+
 
 def get_rigid_body(rigid_body):
     try:
@@ -29,6 +34,29 @@ def add_options(options):
     return _add_options
 
 
+def simplify_exception_output(verbose=True):
+    def decorator(fun):
+        @functools.wraps(fun)
+        def wrapper(*args, **kwargs):
+            try:
+                return fun(*args, **kwargs)
+            except Exception as exc:
+                err_fmt_str = "{}\r\n".format(exc)
+                if verbose:
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    tb = exc_tb
+                    for _ in range(3):
+                        tb = tb.tb_next
+                        if tb is None:
+                            break
+                        lineno, filename = tb.tb_lineno, path.basename(tb.tb_frame.f_code.co_filename)
+                        err_fmt_str += '\t--(line {} in {})\r\n'.format(lineno, filename)
+                click.ClickException(err_fmt_str).show()
+                sys.exit()
+        return wrapper
+    return decorator
+
+
 common_options = [
     click.option('--port', default='COM9', help="Port that Arduino board is connected to"),
     click.option('--baudrate', default=250000, help="Serial communication baudrate"),
@@ -44,6 +72,7 @@ def cli():
 
 
 @cli.command()
+@simplify_exception_output(verbose=True)
 @add_options(common_options)
 @click.option('--stimsize', default=10, help="Size of light stimulus projected onscreen.")
 @click.option('--delay', default=.03, help="start delay length (secs) of trial to wait for stimulus to turn off")
@@ -89,6 +118,7 @@ def display(port, baudrate, trials, stimsize, delay, screen, interval, jitter, a
 
 
 @cli.command()
+@simplify_exception_output(verbose=True)
 @add_options(common_options)
 @click.option('--rigid_body', default='LED', help="Name of rigid body from tracker that represents the arduino's LEDs.")
 def tracking(port, baudrate, trials, interval, jitter, rigid_body):
