@@ -21,7 +21,7 @@ def read_csv(path):
 def perc_range(x, perc):
     return perc * np.ptp(x) + np.min(x)
 
-def get_display_latencies(df):
+def get_display_latencies(df, thresh=.75):
     """ Returns the latency values for each trial of a Display Experiment"""
     def detect_latency(df, thresh):
         off_idx = np.where(df.SensorBrightness < thresh)[0][0]
@@ -31,7 +31,7 @@ def get_display_latencies(df):
         except IndexError:
             return np.nan
 
-    latencies = df.groupby('Trial').apply(detect_latency, thresh=perc_range(df.SensorBrightness, .75))
+    latencies = df.groupby('Trial').apply(detect_latency, thresh=perc_range(df.SensorBrightness, thresh))
     latencies.name = 'DisplayLatency'
     return latencies
 
