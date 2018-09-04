@@ -24,10 +24,10 @@ def perc_range(x, perc):
 
 def get_display_latencies(df, thresh=.75):
     latencies = []
-    ntrials = df.Trial.max()
     sensorf, timef, trialf = df[['SensorBrightness', 'Time', 'Trial']].values.T
     threshf = perc_range(sensorf, thresh)
-    for trial in range(2, ntrials):
+    trial_range = np.arange(df.Trial.min(), df.Trial.max()+1)
+    for trial in trial_range:
         is_trial = trialf == trial
         sensor = sensorf[is_trial]
         time = timef[is_trial]
@@ -40,7 +40,9 @@ def get_display_latencies(df, thresh=.75):
         except IndexError:
             latencies.append(np.nan)
 
-    return pd.Series(data=latencies, name='DisplayLatency')
+    latencies = pd.Series(data=latencies, name='DisplayLatency', index=trial_range)
+    latencies.index.name = 'Trial'
+    return latencies
 
 
 
