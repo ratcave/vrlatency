@@ -1,0 +1,1 @@
+.\vendor\pscp\pscp -pw %THETA_PASSWD% %THETA_USER%@%THETA_IP%:/storage/%THETA_USER%/vrlatency/*.csv ./data
