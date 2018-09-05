@@ -21,18 +21,27 @@ def read_csv(path):
 def perc_range(x, perc):
     return perc * np.ptp(x) + np.min(x)
 
-def get_display_latencies(df):
-    """ Returns the latency values for each trial of a Display Experiment"""
-    def detect_latency(df, thresh):
-        off_idx = np.where(df.SensorBrightness < thresh)[0][0]
-        try:
-            detect_idx = np.where(df.SensorBrightness[off_idx:] > thresh)[0][0]
-            return df.Time.iloc[detect_idx + off_idx] - df.Time.iloc[0]
-        except IndexError:
-            return np.nan
 
-    latencies = df.groupby('Trial').apply(detect_latency, thresh=perc_range(df.SensorBrightness, .75))
-    latencies.name = 'DisplayLatency'
+def get_display_latencies(df, thresh=.75):
+    latencies = []
+    sensorf, timef, trialf = df[['SensorBrightness', 'Time', 'Trial']].values.T
+    threshf = perc_range(sensorf, thresh)
+    trial_range = np.arange(df.Trial.min(), df.Trial.max()+1)
+    for trial in trial_range:
+        is_trial = trialf == trial
+        sensor = sensorf[is_trial]
+        time = timef[is_trial]
+        off_idx = np.where(sensor < threshf)[0][0]
+
+        try:
+            detect_idx = np.where(sensor[off_idx:] > threshf)[0][0]
+            latency = time[detect_idx + off_idx] - time[0]
+            latencies.append(latency)
+        except IndexError:
+            latencies.append(np.nan)
+
+    latencies = pd.Series(data=latencies, name='DisplayLatency', index=trial_range)
+    latencies.index.name = 'Trial'
     return latencies
 
 
