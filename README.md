@@ -6,5 +6,4 @@ VRLatency is a python package that provides an easy way, both in terms of hardwa
 
 ## TODO
 - Fix the tracking experiment
-- Command-line interface
 - add tests
