@@ -5,7 +5,6 @@ dist/
 docs/_build
 docs/_static
 docs/_template
-data/
 docs_guide.txt
 *.pyc
 *.pyd
