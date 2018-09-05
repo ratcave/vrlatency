@@ -62,7 +62,7 @@ common_options = [
     click.option('--baudrate', default=250000, help="Serial communication baudrate"),
     click.option('--trials', default=20, help="Number of trials for measurement"),
     click.option('--interval', default=.05, help="Time duration that a stimulus is shown in a trial, in seconds."),
-    click.otion('--jitter/--no-jitter', default=True, help="Whether to add a randomized delay to the onset of stimulus presentation."),
+    click.option('--jitter/--no-jitter', default=True, help="Whether to add a randomized delay to the onset of stimulus presentation."),
     # TODO: Add 'output' option here.
 ]
 
