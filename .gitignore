@@ -13,3 +13,4 @@ docs/_build
 *.egg-info
 .eggs
 set_secrets.bat
+.ipynb_checkpoints
