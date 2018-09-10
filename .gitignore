@@ -3,6 +3,7 @@ build/
 dist/
 data/
 docs_guide.txt
+docs/_build
 *.pyc
 *.pyd
 *~

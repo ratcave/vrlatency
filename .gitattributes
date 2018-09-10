@@ -1,0 +1,2 @@
+*.ipynb linguist-vendored
+vendor/* linguist-vendored
