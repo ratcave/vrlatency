@@ -67,7 +67,7 @@ void loop() {
 
   if (Serial.available() > 0){
 
-    unsigned long start_micros = micros();
+    unsigned int start_micros = (unsigned int)micros();
 
     Serial.readBytes(input, 3);    
     Command* received_data = (Command*)&input;
@@ -76,7 +76,8 @@ void loop() {
 
     /*  Display Experiment */
     if (command.experiment_type == 68){ // ord('D') - Display
-
+    digitalWrite(9, LOW);
+    digitalWrite(11, LOW);
       struct Packet {
         unsigned int time_m;
         int left; 
